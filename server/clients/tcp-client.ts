@@ -1,17 +1,5 @@
 import { Socket, NetConnectOpts } from 'net';
 
-// class Logger {
-//   constructor(context = {}) {
-//     this.context = context;
-//   }
-
-//   child(context) {
-//     return new Logger(context);
-//   }
-
-//   log()
-// }
-
 class MPDClient {
   private socket: Socket;
 
@@ -96,13 +84,11 @@ class MPDClient {
 //     //   }
 //     // }, 1000)
 
-
 //   } catch (error) {
 //     console.error(error);
 //     process.exit(1);
 //   }
 // })()
-
 
 // const net = require('net');
 // const client = net.createConnection({ port: 6600 }, (a, b) => {

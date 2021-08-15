@@ -1,37 +1,44 @@
 import { Socket, NetConnectOpts } from 'net';
 
+const customParsers = {
+
+};
+
 class MPDClient {
   private socket: Socket;
 
-  constructor() {
+  private options: NetConnectOpts;
+
+  constructor(options: NetConnectOpts) {
     this.socket = new Socket();
+    this.options = options;
+
+    this.socket.on('end', () => console.log('END'));
+    // this.socket.on('close', () => console.log('CLOSE'));
   }
 
-  connect(options: NetConnectOpts): Promise<void> {
-    if (this.socket) {
-      return Promise.resolve();
-    }
-
+  connect(): Promise<string> {
     return new Promise((resolve, reject) => {
-      this.socket.connect(options);
+      this.socket.connect(this.options);
 
       this.socket.once('connect', () => {
-        this.socket.once('data', () => resolve());
+        this.socket.once('data', (chunk) => {
+          resolve(chunk.toString());
+        });
       });
       this.socket.once('error', reject);
     });
   }
 
-  send(data: string): Promise<Buffer> {
+  send(data: string): Promise<Record<string, any>> {
     let buffer = Buffer.from('');
 
     return new Promise((resolve, reject) => {
-      this.socket.write(data);
-      this.socket.once('data', (chunk) => {
+      this.socket.on('data', (chunk) => {
         buffer = Buffer.concat([buffer, chunk]);
 
         if (buffer.indexOf('OK') !== -1) {
-          resolve(buffer);
+          resolve(MPDClient.mapOkBufferToObject(buffer));
         }
 
         if (buffer.indexOf('ACK') !== -1 && buffer.indexOf('\n')) {
@@ -39,7 +46,45 @@ class MPDClient {
         }
       });
       this.socket.once('error', reject);
+
+      this.socket.write(data);
     });
+  }
+
+  destroy(): Promise<void> {
+    return new Promise((resolve) => {
+      this.socket.once('close', resolve);
+
+      this.socket.destroy();
+    });
+  }
+
+  static mapOkBufferToObject(buffer: Buffer): Record<string, string | number> {
+    const separator = '\n';
+    const bufferLength = buffer.length;
+    const separatorBytesLength = Buffer.from(separator).length;
+    const object = {};
+    let offset = 0;
+
+    let index = buffer.indexOf(separator);
+
+    while (index !== -1) {
+      const isLastRow = (index + separatorBytesLength) === bufferLength;
+      const row = buffer.slice(offset, index);
+
+      if (!isLastRow) {
+        const [key, value] = row.toString().split(': ');
+        const numberValue = Number(value);
+        const parsedValue = Number.isNaN(numberValue) ? value : numberValue;
+
+        Object.assign(object, { [key]: parsedValue });
+      }
+
+      offset = offset + row.length + separatorBytesLength;
+      index = buffer.indexOf(separator, offset);
+    }
+
+    return object;
   }
 
   // if (buffer.indexOf('OK') !== -1) {

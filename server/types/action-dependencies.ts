@@ -1,7 +1,7 @@
-import MPDClient from '../clients/mpd-client';
+import MPDService from '../services/mpd.service';
 
 type ActionDependencies = {
-  mpdClient: MPDClient;
+  mpdService: MPDService;
 };
 
 export default ActionDependencies;

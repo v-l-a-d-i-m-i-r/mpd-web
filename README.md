@@ -1,16 +1,16 @@
 https://github.com/developit/nextjs-preact-demo
 
+Flexbox accordion
+https://codepen.io/arjancodes/pen/gbweYB
 
-/api/v1/jsonrpc
+
+/api
 {
-  "id":1
+  "id": "1",
   "jsonrpc":"2.0",
-  "method":"command:run",
-  "params":{
-    name: 'play',
-    arguments: [],
-    options: {}
+  "method":"mpd:status",
+  "params": {
+    "arguments": [],
+    "options": {}
   }
 }
-
-/api/v1/status

@@ -1,8 +1,11 @@
 import { Socket, NetConnectOpts } from 'net';
 
-const customParsers = {
-
-};
+type ACKObject = {
+  code: number;
+  index: number;
+  command: string;
+  message: string;
+}
 
 class MPDClient {
   private socket: Socket;
@@ -30,7 +33,7 @@ class MPDClient {
     });
   }
 
-  send(data: string): Promise<Record<string, any>> {
+  send(data: string): Promise<Buffer> {
     let buffer = Buffer.from('');
 
     return new Promise((resolve, reject) => {
@@ -38,11 +41,11 @@ class MPDClient {
         buffer = Buffer.concat([buffer, chunk]);
 
         if (buffer.indexOf('OK') !== -1) {
-          resolve(MPDClient.mapOkBufferToObject(buffer));
+          resolve(buffer);
         }
 
         if (buffer.indexOf('ACK') !== -1 && buffer.indexOf('\n')) {
-          resolve(buffer);
+          reject(buffer);
         }
       });
       this.socket.once('error', reject);
@@ -60,6 +63,7 @@ class MPDClient {
   }
 
   static mapOkBufferToObject(buffer: Buffer): Record<string, string | number> {
+    // const buffer = buff.slice(0, buff.indexOf('\nOK\n'));
     const separator = '\n';
     const bufferLength = buffer.length;
     const separatorBytesLength = Buffer.from(separator).length;
@@ -71,6 +75,7 @@ class MPDClient {
     while (index !== -1) {
       const isLastRow = (index + separatorBytesLength) === bufferLength;
       const row = buffer.slice(offset, index);
+      console.log(row.toString());
 
       if (!isLastRow) {
         const [key, value] = row.toString().split(': ');
@@ -87,79 +92,17 @@ class MPDClient {
     return object;
   }
 
-  // if (buffer.indexOf('OK') !== -1) {
-  //   resolve(MPDClient.parseOK(buffer));
-  // }
+  static mapACKBufferToObject(buffer: Buffer): ACKObject {
+    const errorString = buffer.toString();
+    const [fullString, code, index, command, message] = /^ACK\s\[(\d+)@(\d+)\]\s{(\w*)}\s(.+)\n$/.exec(errorString) || [];
 
-  // if (buffer.indexOf('ACK') !== -1) {
-  //   resolve(MPDClient.parseACK(buffer));
-  // }
-
-  // close() {
-  //   return new Promise(res)
-  // }
-
-  // static parseOK(buffer) {
-  //   return buffer.toString();
-  // }
-
-  // static parseACK(buffer) {
-  //   return buffer.toString();
-  // }
+    return {
+      code: parseInt(code, 10),
+      index: parseInt(index, 10),
+      command,
+      message,
+    };
+  }
 }
-
-// (async () => {
-//   try {
-//     const client = new MPDClient();
-//     await client.connect({ port: 6600 });
-
-//     const command = [
-//       'stop'
-//     ]
-
-//     const dataBuffer = await client.send(`${command.join('\n')}\n`);
-//     console.log(dataBuffer.toString());
-
-//     // setInterval(async () => {
-//     //   try {
-//     //     const dataBuffer = await client.send('status\n');
-//     //     console.log('dataBuffer', dataBuffer.toString());
-//     //   } catch (error) {
-//     //     console.log(error);
-//     //   }
-//     // }, 1000)
-
-//   } catch (error) {
-//     console.error(error);
-//     process.exit(1);
-//   }
-// })()
-
-// const net = require('net');
-// const client = net.createConnection({ port: 6600 }, (a, b) => {
-//   console.log(a, b);
-
-//   // 'connect' listener.
-//   console.log('connected to server!');
-
-//   setInterval(() => {
-//     client.write('status\n');
-//     client.write('currentsong\n')
-//   }, 1000);
-
-//   // client.write('playlist\n');
-// });
-// client.on('error', (e, d) => {
-//   console.log(e, d);
-// });
-
-// client.on('data', (data) => {
-//   console.log(data.toString());
-
-//   // client.end();
-// });
-// client.on('end', () => {
-//   console.log('disconnected from server');
-// });
 
 export default MPDClient;

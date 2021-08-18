@@ -5,7 +5,7 @@ type ACKObject = {
   index: number;
   command: string;
   message: string;
-}
+};
 
 class MPDClient {
   private socket: Socket;

@@ -8,7 +8,7 @@
   "parserOptions": {
     "project": "./tsconfig.json"
   },
-  "ignorePatterns": ["node_modules", "dist"],
+  "ignorePatterns": ["node_modules", "src/public", "build"],
   "rules": {
     "react/prop-types": 0,
     "object-curly-newline": ["error", { "consistent": true }]

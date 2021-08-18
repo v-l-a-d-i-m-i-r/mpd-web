@@ -1,0 +1,6 @@
+{
+  "watch": ["pages","server"],
+  "ignore": ["node_modules", ".next"],
+  "exec": "node --inspect ./node_modules/.bin/ts-node ./src/index.ts",
+  "ext": "js ts"
+}

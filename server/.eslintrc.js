@@ -1,7 +1,6 @@
 module.exports = {
   extends: [
-    'airbnb-typescript',
-    'airbnb/hooks',
+    'airbnb-typescript/base',
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
   ],
@@ -9,9 +8,8 @@ module.exports = {
     project: './tsconfig.json',
     tsconfigRootDir: __dirname,
   },
-  ignorePatterns: ['node_modules', 'dist'],
+  ignorePatterns: ['node_modules', 'dist', '.eslintrc.js'],
   rules: {
-    'react/prop-types': 0,
     'object-curly-newline': ['error', { consistent: true }],
   }
 };

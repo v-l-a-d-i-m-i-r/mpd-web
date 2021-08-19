@@ -9,7 +9,7 @@ module.exports = {
     project: './tsconfig.json',
     tsconfigRootDir: __dirname,
   },
-  ignorePatterns: ['node_modules', 'src/public', 'build'],
+  ignorePatterns: ['node_modules', 'src/public', 'build', '.eslintrc.js'],
   rules: {
     'react/prop-types': 0,
     'object-curly-newline': ['error', { consistent: true }],

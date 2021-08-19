@@ -12,18 +12,12 @@ try {
 
     if (parsedUrl.pathname === '/api') {
       new HttpController().execute(req, res);
-
-      return;
     }
   });
 
-  server.listen({ port: HTTP_PORT }, () => {
+  server.listen(HTTP_PORT, () => {
     // tslint:disable-next-line:no-console
-    console.log(
-      `> Server listening at http://localhost:${HTTP_PORT} as ${
-        dev ? 'development' : process.env.NODE_ENV
-      }`,
-    );
+    console.log(`> Server listening at http://localhost:${HTTP_PORT}`);
   });
 } catch (error) {
   console.error(error);

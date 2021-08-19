@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "webpack-cli serve --mode=development --env development --open --hot",
+    "dev": "webpack-cli serve --mode=development --env development --open --hot",
     "build": "webpack --mode=production --env production --progress",
     "lint": "eslint . --ext .js,.ts"
   },

@@ -1,3 +1,5 @@
+import { MPD_HOST, MPD_PORT } from '../config';
+
 import MPDClient from '../clients/mpd.client';
 import ACKError from '../errors/ack.error';
 
@@ -15,7 +17,7 @@ class MPDService {
   private client: MPDClient;
 
   constructor() {
-    this.client = new MPDClient({ port: 6600 });
+    this.client = new MPDClient({ host: MPD_HOST, port: MPD_PORT });
   }
 
   private async send(commandString: string): Promise<Buffer> {

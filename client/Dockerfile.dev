@@ -1,0 +1,12 @@
+FROM node:14.17.5-alpine3.12
+
+WORKDIR /www
+
+COPY package.json package.json
+COPY package-lock.json package-lock.json
+
+RUN npm ci
+
+COPY . .
+
+CMD ["npm", "run", "dev"]

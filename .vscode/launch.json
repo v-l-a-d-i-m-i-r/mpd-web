@@ -24,6 +24,17 @@
       "outFiles": [
         "${workspaceFolder}/**/*.js"
       ]
+    },
+    {
+      "name": "Docker:Attach",
+      "type": "node",
+      "request": "attach",
+      "restart": true,
+      "port": 9229,
+      "address": "localhost",
+      "localRoot": "${workspaceFolder}/server",
+      "remoteRoot": "/www",
+      "protocol": "inspector"
     }
   ]
 }

@@ -1,20 +1,12 @@
 import { createServer } from 'http';
 import { parse } from 'url';
-// import next from 'next';
+
+import { HTTP_PORT, NODE_ENV } from './config';
 import HttpController from './controllers/http.controller';
 
-const port = parseInt(process.env.PORT || '3000', 10);
-const dev = process.env.NODE_ENV !== 'production';
+const dev = NODE_ENV !== 'production';
 
-// const app = next({
-//   dev,
-//   dir: join(__dirname, 'client'),
-// });
-// const handle = app.getRequestHandler();
-
-(async () => {
-  // await app.prepare();
-
+try {
   const server = createServer((req, res) => {
     const parsedUrl = parse(req.url!, true);
 
@@ -23,22 +15,18 @@ const dev = process.env.NODE_ENV !== 'production';
 
       return;
     }
-
-    // handle(req, res, parsedUrl)
-    //   .catch((error) => console.error(error));
   });
 
-  server.listen({ port }, () => {
+  server.listen({ port: HTTP_PORT }, () => {
     // tslint:disable-next-line:no-console
     console.log(
-      `> Server listening at http://localhost:${port} as ${
+      `> Server listening at http://localhost:${HTTP_PORT} as ${
         dev ? 'development' : process.env.NODE_ENV
       }`,
     );
   });
-})()
-  .catch((error) => {
-    console.error(error);
+} catch (error) {
+  console.error(error);
 
-    process.exit(1);
-  });
+  process.exit(1);
+}

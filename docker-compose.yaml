@@ -1,0 +1,30 @@
+version: '3.1'
+
+services:
+  client:
+    environment:
+      API_HOST: server
+      API_HTTP_PORT: ${API_HTTP_PORT}
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    ports:
+      - 9000:9000
+    volumes:
+      - ./client:/www
+      - /www/node_modules
+
+  server:
+    environment:
+      HTTP_PORT: 80
+      MPD_HOST: ${MPD_HOST}
+      MPD_PORT: ${MPD_PORT}
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+    ports:
+      - 3000:80
+      - 9229:9229
+    volumes:
+      - ./server:/www
+      - /www/node_modules

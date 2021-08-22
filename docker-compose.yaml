@@ -2,17 +2,15 @@ version: '3.1'
 
 services:
   client:
-    environment:
-      API_HOST: server
-      API_HTTP_PORT: ${API_HTTP_PORT}
     build:
       context: ./client
       dockerfile: Dockerfile.dev
     ports:
       - 9000:9000
     volumes:
-      - ./client:/www
-      - /www/node_modules
+      - ./client/:/www/
+      - /www/node_modules/
+    command: npm run dev
 
   server:
     environment:
@@ -26,5 +24,7 @@ services:
       - 3000:80
       - 9229:9229
     volumes:
-      - ./server:/www
-      - /www/node_modules
+      - ./server/:/www/
+      - /www/build/
+      - /www/node_modules/
+    command: npm run dev

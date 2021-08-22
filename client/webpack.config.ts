@@ -45,6 +45,9 @@ const webpackConfig = (): Configuration => ({
     port: 9000,
     open: true,
     historyApiFallback: true,
+    proxy: {
+      '/api': 'http://server',
+    },
   },
   plugins: [
     new HtmlWebpackPlugin({

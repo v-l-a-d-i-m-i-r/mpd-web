@@ -10,6 +10,16 @@ try {
   const server = createServer((req, res) => {
     const parsedUrl = parse(req.url!, true);
 
+    console.log(`request url=${parsedUrl.pathname}`);
+
+    // req.on('error', (error) => {
+    //   console.log('Request error: ', error);
+    // });
+
+    // res.on('error', (error) => {
+    //   console.log('Response error: ', error);
+    // });
+
     if (parsedUrl.pathname === '/api') {
       new HttpController().execute(req, res);
     }

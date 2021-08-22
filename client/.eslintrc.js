@@ -11,7 +11,17 @@ module.exports = {
   },
   ignorePatterns: ['node_modules', 'src/public', 'build', '.eslintrc.js'],
   rules: {
+    'max-len': ['error', { code: 150 }],
     'react/prop-types': 0,
     'object-curly-newline': ['error', { consistent: true }],
+    'import/extensions': [
+      'error',
+      'ignorePackages',
+      {
+        'ts': 'never',
+        'tsx': 'never'
+       }
+    ],
+    'import/prefer-default-export': 0,
   },
 }

@@ -14,32 +14,32 @@ function mapPlainTextToObject(text: string): Record<string, string | number> {
     }, {});
 }
 class MPDService {
-  private client: MPDClient;
-
-  constructor() {
-    this.client = new MPDClient({ host: MPD_HOST, port: MPD_PORT });
-  }
-
+  // eslint-disable-next-line class-methods-use-this
   private async send(commandString: string): Promise<Buffer> {
     try {
-      await this.client.connect();
-      const resultBuffer = await this.client.send(`${commandString}\n`);
-      await this.client.destroy();
+      const client = new MPDClient({ host: MPD_HOST, port: MPD_PORT });
+      await client.connect();
+      const resultBuffer = await client.send(`${commandString}\n`);
+      await client.close();
 
       return resultBuffer.slice(0, resultBuffer.indexOf('OK\n'));
-    } catch (errorBuffer) {
+    } catch (error) {
+      if (!(error instanceof Buffer)) {
+        throw error;
+      }
+
       const {
         code,
         index,
         command,
         message,
-      } = MPDClient.mapACKBufferToObject(errorBuffer as Buffer);
+      } = MPDClient.mapACKBufferToObject(error);
 
       throw new ACKError(message, { code, index, command });
     }
   }
 
-  async getStatus() {
+  async status() {
     const command = 'status';
     const resultBuffer = await this.send(command);
 
@@ -56,7 +56,7 @@ class MPDService {
     return MPDClient.mapOkBufferToObject(resultBuffer);
   }
 
-  async listFiles(url?: string) {
+  async listfiles(url?: string) {
     const command = url ? `listfiles ${url}` : 'listfiles';
     const resultBuffer = await this.send(command);
 
@@ -70,7 +70,7 @@ class MPDService {
     return result;
   }
 
-  async getPlaylistInfo() {
+  async playlistinfo() {
     const command = 'playlistinfo';
     const resultBuffer = await this.send(command);
 
@@ -83,12 +83,55 @@ class MPDService {
     return result;
   }
 
-  async listPlaylists() {
+  async listplaylists() {
     const command = 'listplaylists';
 
     const resultBuffer = await this.send(command);
 
     return { not_implemented: true };
+  }
+
+  async play() {
+    const command = 'play';
+    await this.send(command);
+
+    return {};
+  }
+
+  async pause() {
+    const command = 'pause';
+    await this.send(command);
+
+    return {};
+  }
+
+  async next() {
+    const command = 'next';
+    await this.send(command);
+
+    return {};
+  }
+
+  async previous() {
+    const command = 'previous';
+    await this.send(command);
+
+    return {};
+  }
+
+  async stop() {
+    const command = 'stop';
+    await this.send(command);
+
+    return {};
+  }
+
+  async seekcur(position: number) {
+    const command = `seekcur ${position}`;
+
+    await this.send(command);
+
+    return {};
   }
 }
 

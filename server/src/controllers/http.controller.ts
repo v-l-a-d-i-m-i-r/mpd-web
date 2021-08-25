@@ -10,16 +10,23 @@ import StatsAction from '../actions/stats.action';
 import ListFilesAction from '../actions/listfiles.action';
 import PlaylistInfoAction from '../actions/playlistinfo.action';
 import ListPlaylistsAction from '../actions/listplaylists.action';
+import PlayAction from '../actions/play.action';
+import PauseAction from '../actions/pause.action';
 
-const router: Record<string, new (deps: ActionDependencies) => Action> = {
-  'mpd:status': StatusAction,
-  'mpd:stats': StatsAction,
-  'mpd:listfiles': ListFilesAction,
-  'mpd:playlistinfo': PlaylistInfoAction,
-  'mpd:listplaylists': ListPlaylistsAction,
+import MPDAction from '../actions/mpd.action';
+
+const router: Record<string, new (deps: ActionDependencies) => any> = {
+  // 'mpd:status': StatusAction,
+  // 'mpd:stats': StatsAction,
+  // 'mpd:listfiles': ListFilesAction,
+  // 'mpd:playlistinfo': PlaylistInfoAction,
+  // 'mpd:listplaylists': ListPlaylistsAction,
+  // 'mpd:play': PlayAction,
+  // 'mpd:pause': PauseAction,
+  MPD: MPDAction,
 };
 
-const mpdService = new MPDService();
+// const mpdService = new MPDService();
 const validateRequest = (requestData: any): JSONRPCRequest => requestData as JSONRPCRequest;
 
 class HttpController {
@@ -35,13 +42,21 @@ class HttpController {
       .then((body: any) => validateRequest(body))
       .then(async ({ jsonrpc, method, params, id }): Promise<void> => {
         try {
-          const ActionClass = router[method];
+          const [actionClassName, actionMethodName] = method.split('.');
+          const ActionClass = router[actionClassName];
 
           if (!ActionClass) {
-            throw Error('Action not found');
+            throw Error(`Action ${actionClassName} not found`);
           }
+
+          if (!(typeof ActionClass.prototype[actionMethodName] === 'function')) {
+            throw Error(`Method ${actionClassName}.${actionMethodName} not found`);
+          }
+
+          const mpdService = new MPDService();
+
           const action = new ActionClass({ mpdService });
-          const result = await action.execute(params);
+          const result = await action[actionMethodName](params);
 
           response.writeHead(200, { 'Content-Type': 'application/json' });
           response.end(JSON.stringify({ id, jsonrpc, result }));
@@ -50,10 +65,7 @@ class HttpController {
           response.end(JSON.stringify({
             id: 1,
             jsonrpc: '2.0',
-            error: {
-              code: error.code,
-              message: error.message,
-            },
+            error,
           }));
         }
       })

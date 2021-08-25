@@ -3,14 +3,14 @@ import { parse } from 'url';
 
 import { HTTP_PORT, NODE_ENV } from './config';
 import HttpController from './controllers/http.controller';
+import Logger from './logger/logger';
 
 const dev = NODE_ENV !== 'production';
 
 try {
   const server = createServer((req, res) => {
-    const parsedUrl = parse(req.url!, true);
-
-    console.log(`request url=${parsedUrl.pathname}`);
+    const { pathname } = parse(req.url!, true);
+    const traceId = Date.now();
 
     // req.on('error', (error) => {
     //   console.log('Request error: ', error);
@@ -20,8 +20,12 @@ try {
     //   console.log('Response error: ', error);
     // });
 
-    if (parsedUrl.pathname === '/api') {
-      new HttpController().execute(req, res);
+    const logger = new Logger({ context: { traceId, url: pathname } });
+
+    logger.log('HTTP incoming request');
+
+    if (pathname === '/api') {
+      new HttpController({ logger }).execute(req, res);
     }
   });
 

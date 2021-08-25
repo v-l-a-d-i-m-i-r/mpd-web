@@ -1,12 +1,5 @@
 import { Socket, NetConnectOpts } from 'net';
 
-type ACKObject = {
-  code: number;
-  index: number;
-  command: string;
-  message: string;
-};
-
 class MPDClient {
   private socket: Socket | null;
 
@@ -87,14 +80,6 @@ class MPDClient {
     });
   }
 
-  // destroy(): Promise<void> {
-  //   return new Promise((resolve) => {
-  //     this.socket.once('close', resolve);
-
-  //     this.socket.destroy();
-  //   });
-  // }
-
   close(): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.socket) {
@@ -111,48 +96,6 @@ class MPDClient {
         resolve();
       });
     });
-  }
-
-  static mapOkBufferToObject(buffer: Buffer): Record<string, string | number> {
-    // const buffer = buff.slice(0, buff.indexOf('\nOK\n'));
-    const separator = '\n';
-    const bufferLength = buffer.length;
-    const separatorBytesLength = Buffer.from(separator).length;
-    const object = {};
-    let offset = 0;
-
-    let index = buffer.indexOf(separator);
-
-    while (index !== -1) {
-      const isLastRow = (index + separatorBytesLength) === bufferLength;
-      const row = buffer.slice(offset, index);
-      console.log(row.toString());
-
-      if (!isLastRow) {
-        const [key, value] = row.toString().split(': ');
-        const numberValue = Number(value);
-        const parsedValue = Number.isNaN(numberValue) ? value : numberValue;
-
-        Object.assign(object, { [key]: parsedValue });
-      }
-
-      offset = offset + row.length + separatorBytesLength;
-      index = buffer.indexOf(separator, offset);
-    }
-
-    return object;
-  }
-
-  static mapACKBufferToObject(buffer: Buffer): ACKObject {
-    const errorString = buffer.toString();
-    const [fullString, code, index, command, message] = /^ACK\s\[(\d+)@(\d+)\]\s{(\w*)}\s(.+)\n$/.exec(errorString) || [];
-
-    return {
-      code: parseInt(code, 10),
-      index: parseInt(index, 10),
-      command,
-      message,
-    };
   }
 }
 

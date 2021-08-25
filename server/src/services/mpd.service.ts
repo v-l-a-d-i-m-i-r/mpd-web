@@ -2,6 +2,14 @@ import { MPD_HOST, MPD_PORT } from '../config';
 
 import MPDClient from '../clients/mpd.client';
 import ACKError from '../errors/ack.error';
+import ILogger from '../types/logger';
+
+type ACKObject = {
+  code: number;
+  index: number;
+  command: string;
+  message: string;
+};
 
 function mapPlainTextToObject(text: string): Record<string, string | number> {
   return text.split('\n')
@@ -13,7 +21,55 @@ function mapPlainTextToObject(text: string): Record<string, string | number> {
       return Object.assign(object, { [key]: parsedValue });
     }, {});
 }
+
+function mapOkBufferToObject(buffer: Buffer): Record<string, string | number> {
+  // const buffer = buff.slice(0, buff.indexOf('\nOK\n'));
+  const separator = '\n';
+  const bufferLength = buffer.length;
+  const separatorBytesLength = Buffer.from(separator).length;
+  const object = {};
+  let offset = 0;
+
+  let index = buffer.indexOf(separator);
+
+  while (index !== -1) {
+    const isLastRow = (index + separatorBytesLength) === bufferLength;
+    const row = buffer.slice(offset, index);
+
+    if (!isLastRow) {
+      const [key, value] = row.toString().split(': ');
+      const numberValue = Number(value);
+      const parsedValue = Number.isNaN(numberValue) ? value : numberValue;
+
+      Object.assign(object, { [key]: parsedValue });
+    }
+
+    offset = offset + row.length + separatorBytesLength;
+    index = buffer.indexOf(separator, offset);
+  }
+
+  return object;
+}
+
+function mapACKBufferToObject(buffer: Buffer): ACKObject {
+  const errorString = buffer.toString();
+  const [fullString, code, index, command, message] = /^ACK\s\[(\d+)@(\d+)\]\s{(\w*)}\s(.+)\n$/.exec(errorString) || [];
+
+  return {
+    code: parseInt(code, 10),
+    index: parseInt(index, 10),
+    command,
+    message,
+  };
+}
+
 class MPDService {
+  logger: ILogger;
+
+  constructor({ logger }: { logger: ILogger }) {
+    this.logger = logger;
+  }
+
   // eslint-disable-next-line class-methods-use-this
   private async send(commandString: string): Promise<Buffer> {
     try {
@@ -28,18 +84,15 @@ class MPDService {
         throw error;
       }
 
-      const {
-        code,
-        index,
-        command,
-        message,
-      } = MPDClient.mapACKBufferToObject(error);
+      const { code, index, command, message } = mapACKBufferToObject(error);
 
       throw new ACKError(message, { code, index, command });
     }
   }
 
   async status() {
+    this.logger.log('MPDService.status');
+
     const command = 'status';
     const resultBuffer = await this.send(command);
 
@@ -53,7 +106,7 @@ class MPDService {
     const command = 'stats';
     const resultBuffer = await this.send(command);
 
-    return MPDClient.mapOkBufferToObject(resultBuffer);
+    return mapOkBufferToObject(resultBuffer);
   }
 
   async listfiles(url?: string) {

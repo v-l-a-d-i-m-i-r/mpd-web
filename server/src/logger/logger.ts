@@ -8,17 +8,17 @@ class Logger implements ILogger {
     this.context = context || {};
   }
 
-  log(message: string, data?: any) {
+  log(message: string, data?: Record<string | number, any>): void {
     console.log(JSON.stringify({
       level: 'log',
       timestamp: Date.now(),
       context: this.context,
       message,
       data,
-    }));
+    }), '\n');
   }
 
-  error(message: string, data?: any) {
+  error(message: string, data?: Record<string | number, any>): void {
     console.error(JSON.stringify({
       level: 'error',
       timestamp: Date.now(),

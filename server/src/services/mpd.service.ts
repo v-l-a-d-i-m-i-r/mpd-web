@@ -11,6 +11,35 @@ type ACKObject = {
   message: string;
 };
 
+type PlaylistItem = {
+  file: string;
+  Title: string;
+  Pos: number;
+  Id: number;
+  Name?: string;
+  'Last-Modified'?: string;
+  Artist?: string;
+  Album?: string;
+  Genre?: string;
+  Time?: number;
+  duration?: number;
+};
+
+type NormalizedPlaylistItem = {
+  type: string;
+  path: string;
+  title: string;
+  pos: number;
+  id: number;
+  name?: string;
+  lastModified?: string;
+  artist?: string;
+  album?: string;
+  genre?: string;
+  time?: number;
+  duration?: number;
+};
+
 function mapPlainTextToObject(text: string): Record<string, string | number> {
   return text.split('\n')
     .reduce((object, row) => {
@@ -123,7 +152,7 @@ class MPDService {
     return result;
   }
 
-  async playlistinfo() {
+  async playlistinfo(): Promise<PlaylistItem[]> {
     const command = 'playlistinfo';
     const resultBuffer = await this.send(command);
 
@@ -133,7 +162,7 @@ class MPDService {
       .split('\n\n')
       .map(mapPlainTextToObject);
 
-    return result;
+    return result as PlaylistItem[];
   }
 
   async listplaylists() {
@@ -185,6 +214,34 @@ class MPDService {
     await this.send(command);
 
     return {};
+  }
+
+  async getPlaylistInfo(): Promise<NormalizedPlaylistItem[]> {
+    const playlistInfo = await this.playlistinfo();
+
+    return playlistInfo.map((playlistItem) => {
+      // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
+      const type = playlistItem.file.match(/^http/) ? 'stream' : 'file';
+
+      const result = {
+        type,
+        path: type === 'file' ? `/${playlistItem.file}` : playlistItem.file,
+        title: playlistItem.Title,
+        pos: playlistItem.Pos,
+        id: playlistItem.Id,
+      };
+
+      if (playlistItem['Last-Modified']) Object.assign(result, { lastModified: playlistItem['Last-Modified'] });
+
+      Object
+        .keys(playlistItem)
+        .filter((key) => !['file', 'Title', 'Pos', 'Id', 'Last-Modified'].includes(key))
+        .forEach((key) => {
+          Object.assign(result, { [key.toLowerCase()]: playlistItem[key as keyof PlaylistItem] });
+        });
+
+      return result;
+    });
   }
 }
 

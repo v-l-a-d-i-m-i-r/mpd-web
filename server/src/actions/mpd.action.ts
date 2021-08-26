@@ -24,7 +24,7 @@ class MPDAction {
   }
 
   getPlaylistInfo() {
-    return this.mpdService.playlistinfo();
+    return this.mpdService.getPlaylistInfo();
   }
 
   pause() {

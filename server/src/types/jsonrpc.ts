@@ -10,5 +10,5 @@ export type JSONRPCRequest = {
 export type JSONRPCSuccessResponse = {
   id: Id;
   jsonrpc: '2.0',
-  result: any,
+  result: Record<string, any> | Record<string, any>[],
 };

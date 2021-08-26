@@ -20,3 +20,36 @@ https://github.com/mayajs/router
     "options": {}
   }
 }
+
+
+
+// last song status
+// {
+//   "repeat": 0,
+//   "random": 0,
+//   "single": 0,
+//   "consume": 0,
+//   "playlist": 2,
+//   "playlistlength": 3,
+//   "mixrampdb": 0,
+//   "state": "pause",
+//   "song": 2,
+//   "songid": 3,
+//   "time": "5:2806",
+//   "elapsed": 4.988,
+//   "bitrate": 0,
+//   "duration": 2805.6,
+//   "audio": "48000:24:2"
+// }
+
+// end of last song status
+// {
+//   "repeat": 0,
+//   "random": 0,
+//   "single": 0,
+//   "consume": 0,
+//   "playlist": 48,
+//   "playlistlength": 4,
+//   "mixrampdb": 0,
+//   "state": "stop"
+// }

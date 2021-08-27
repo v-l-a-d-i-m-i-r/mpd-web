@@ -33,7 +33,7 @@
       "port": 9229,
       "address": "localhost",
       "localRoot": "${workspaceFolder}/server",
-      "remoteRoot": "/www",
+      "remoteRoot": "/server",
       "protocol": "inspector"
     }
   ]

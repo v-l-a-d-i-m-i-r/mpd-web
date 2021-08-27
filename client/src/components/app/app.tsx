@@ -38,7 +38,7 @@ const App: React.FC = () => {
     let isMounted = true;
 
     const getMPDStatus = (): Promise<void> => rpcService
-      .call({ method: 'MPD.getStatus' })
+      .call({ method: 'MPD.getExtendedStatus' })
       .then((newStatus) => isMounted && setStatus(newStatus))
       .catch(errorHandler)
       .then(() => {

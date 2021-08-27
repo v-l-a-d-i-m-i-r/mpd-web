@@ -1,32 +1,38 @@
-import { createServer } from 'http';
-import { parse } from 'url';
+import { createServer, IncomingMessage, ServerResponse } from 'http';
 
 import { HTTP_PORT, NODE_ENV } from './config';
 import HttpController from './controllers/http.controller';
+import ILogger from './types/logger'
 import Logger from './logger/logger';
+import Router from './router/router';
 
 const dev = NODE_ENV !== 'production';
 
+const routes = [
+  {
+    when: (req: IncomingMessage) => (req.url === '/api' && req.method === 'POST'),
+    then: (req: IncomingMessage, res: ServerResponse, { logger }: { logger: ILogger }) => new HttpController({ logger }).execute(req, res),
+  }
+];
+
+const router = new Router({ routes });
+
 try {
-  const server = createServer((req, res) => {
-    const { pathname } = parse(req.url!, true);
+  const server = createServer((req: IncomingMessage, res: ServerResponse) => {
     const traceId = Date.now();
+    const routeHandler = router.matchRouteHandler(req);
 
-    // req.on('error', (error) => {
-    //   console.log('Request error: ', error);
-    // });
-
-    // res.on('error', (error) => {
-    //   console.log('Response error: ', error);
-    // });
-
-    const logger = new Logger({ context: { traceId, url: pathname } });
+    const logger = new Logger({ context: { traceId, url: req.url } });
 
     logger.log('HTTP incoming request');
 
-    if (pathname === '/api') {
-      new HttpController({ logger }).execute(req, res);
+    if (routeHandler) {
+      return routeHandler(req, res, { logger });
     }
+
+    res.writeHead(404, {"Content-Type": "text/plain"});
+    res.write("404 Not Found\n");
+    res.end();
   });
 
   server.listen(HTTP_PORT, () => {

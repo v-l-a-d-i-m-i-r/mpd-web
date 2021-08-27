@@ -107,7 +107,7 @@ class MPDService {
       const resultBuffer = await client.send(`${commandString}\n`);
       await client.close();
 
-      return resultBuffer.slice(0, resultBuffer.indexOf('OK\n'));
+      return resultBuffer.slice(0, resultBuffer.indexOf('\nOK\n'));
     } catch (error) {
       if (!(error instanceof Buffer)) {
         throw error;
@@ -120,8 +120,6 @@ class MPDService {
   }
 
   async status() {
-    this.logger.log('MPDService.status');
-
     const command = 'status';
     const resultBuffer = await this.send(command);
 
@@ -152,8 +150,9 @@ class MPDService {
     return result;
   }
 
-  async playlistinfo(): Promise<PlaylistItem[]> {
-    const command = 'playlistinfo';
+  async playlistinfo(args?: string[]): Promise<PlaylistItem[]> {
+    const songpos = args && args[0];
+    const command = songpos ? `playlistinfo ${songpos}` : 'playlistinfo';
     const resultBuffer = await this.send(command);
 
     const result = resultBuffer
@@ -216,8 +215,8 @@ class MPDService {
     return {};
   }
 
-  async getPlaylistInfo(): Promise<NormalizedPlaylistItem[]> {
-    const playlistInfo = await this.playlistinfo();
+  async getPlaylistInfo(args?: string[]): Promise<NormalizedPlaylistItem[]> {
+    const playlistInfo = await this.playlistinfo(args);
 
     return playlistInfo.map((playlistItem) => {
       // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
@@ -242,6 +241,13 @@ class MPDService {
 
       return result;
     });
+  }
+
+  async getExtendedStatus() {
+    const status = await this.status();
+    const playlistInfo = await this.getPlaylistInfo([status.song as string]);
+
+    return { ...status, songInfo: playlistInfo[0] };
   }
 }
 

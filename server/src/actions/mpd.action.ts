@@ -15,6 +15,10 @@ class MPDAction {
     return this.mpdService.status();
   }
 
+  getExtendedStatus() {
+    return this.mpdService.getExtendedStatus();
+  }
+
   getFiles() {
     return this.mpdService.listfiles();
   }

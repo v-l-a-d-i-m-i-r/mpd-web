@@ -8,8 +8,8 @@ services:
     ports:
       - 9000:9000
     volumes:
-      - ./client/:/www/
-      - /www/node_modules/
+      - ./client/:/client/
+      - /client/node_modules/
     command: npm run dev
 
   server:
@@ -24,7 +24,7 @@ services:
       - 3000:80
       - 9229:9229
     volumes:
-      - ./server/:/www/
-      - /www/build/
-      - /www/node_modules/
+      - ./server/:/server/
+      - /server/build/
+      - /server/node_modules/
     command: npm run dev

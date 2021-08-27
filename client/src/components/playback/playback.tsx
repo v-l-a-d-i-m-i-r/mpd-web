@@ -40,7 +40,7 @@ const Playback: React.FC = ({ state, repeat, song, playlistlength, elapsed, dura
 
       <input
         disabled={isStream}
-        style={{ display: 'block', width: '100%' }}
+        // style={{ display: 'block', width: '100%' }}
         type="range"
         min={0}
         max={isStream ? 0 : duration}

@@ -9,6 +9,9 @@ https://developer.mozilla.org/en-US/docs/Learn/Server-side/Node_server_without_f
 Simple router
 https://github.com/mayajs/router
 
+Responsive ag-grid
+https://dev.to/rexebin/build-an-ag-grid-react-component-that-auto-resize-columns-to-fit-container-width-1h5n
+
 
 /api
 {

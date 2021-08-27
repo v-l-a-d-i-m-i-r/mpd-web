@@ -4,7 +4,7 @@ import { HTTP_PORT, NODE_ENV } from './config';
 import HttpController from './controllers/http.controller';
 import ILogger from './types/logger'
 import Logger from './logger/logger';
-import Router from './router/router';
+import Matcher from './utils/matcher';
 
 const dev = NODE_ENV !== 'production';
 
@@ -15,12 +15,12 @@ const routes = [
   }
 ];
 
-const router = new Router({ routes });
+const router = new Matcher(routes);
 
 try {
   const server = createServer((req: IncomingMessage, res: ServerResponse) => {
     const traceId = Date.now();
-    const routeHandler = router.matchRouteHandler(req);
+    const routeHandler = router.match(req);
 
     const logger = new Logger({ context: { traceId, url: req.url } });
 

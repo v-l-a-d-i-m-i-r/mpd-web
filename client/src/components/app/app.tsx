@@ -4,6 +4,7 @@ import RPCService from '../../services/rpc.service';
 
 import Playback from '../playback/playback';
 import Playlist from '../playlist/playlist';
+import List from '../list/list';
 
 const interval = 1000;
 
@@ -38,7 +39,7 @@ const App: React.FC = () => {
     let isMounted = true;
 
     const getMPDStatus = (): Promise<void> => rpcService
-      .call({ method: 'MPD.getExtendedStatus' })
+      .call('MPD.getExtendedStatus')
       .then((newStatus) => isMounted && setStatus(newStatus))
       .catch(errorHandler)
       .then(() => {

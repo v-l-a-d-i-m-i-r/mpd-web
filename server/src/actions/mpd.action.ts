@@ -1,14 +1,17 @@
-import MPDService from '../services/mpd.service';
+import ActionDependencies from '../types/action-dependencies';
 
-type MPDActionDependencies = {
-  mpdService: MPDService;
+type ActionParams = {
+  args?: (string | number)[];
 };
 
 class MPDAction {
-  mpdService: MPDService;
+  mpdService: ActionDependencies['mpdService'];
 
-  constructor({ mpdService }: MPDActionDependencies) {
+  logger: ActionDependencies['logger'];
+
+  constructor({ mpdService, logger }: ActionDependencies) {
     this.mpdService = mpdService;
+    this.logger = logger;
   }
 
   getStatus() {
@@ -35,8 +38,10 @@ class MPDAction {
     return this.mpdService.pause();
   }
 
-  play() {
-    return this.mpdService.play();
+  play({ args }: ActionParams) {
+    const songpos = args && args[0];
+
+    return this.mpdService.play(songpos);
   }
 
   stop() {
@@ -51,8 +56,10 @@ class MPDAction {
     return this.mpdService.next();
   }
 
-  seekCurrent({ args }: { args: number[] }) {
-    return this.mpdService.seekcur(args[0]);
+  seekCurrent({ args }: ActionParams) {
+    const time = args ? args[0] : 0;
+
+    return this.mpdService.seekcur(time);
   }
 }
 

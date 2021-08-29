@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { AgGridReact, AgGridColumn } from 'ag-grid-react';
+import { AgGridReact } from 'ag-grid-react';
+import { GridReadyEvent, FirstDataRenderedEvent, RowDoubleClickedEvent, GridSizeChangedEvent, RowClassParams } from 'ag-grid-community';
 
 import RPCService from '../../services/rpc.service';
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
+import 'ag-grid-community/dist/styles/ag-theme-fresh.min.css';
 
 const rpcService = new RPCService();
 
@@ -14,7 +15,6 @@ const columnDefs = [
   { field: 'path', rowDrag: true },
 ];
 const defaultColDef = {};
-
 const initialState = [];
 
 const Playlist: React.FC = ({ songid }) => {
@@ -23,9 +23,12 @@ const Playlist: React.FC = ({ songid }) => {
   useEffect(() => {
     let isMounted = true;
 
-    rpcService
-      .call({ method: 'MPD.getPlaylistInfo' })
-      .then((newState) => (isMounted && setState(newState)))
+    rpcService.call('MPD.getPlaylistInfo')
+      .then((rows) => {
+        const newState = rows.map((row) => (row.id === songid ? { ...row, active: true } : row));
+
+        isMounted && setState(newState)
+      })
       .catch(errorHandler);
 
     return () => {
@@ -33,18 +36,27 @@ const Playlist: React.FC = ({ songid }) => {
     };
   }, [songid]);
 
-  const onGridReady = ({ api }) => {
-    window.addEventListener('resize', () => api.sizeColumnsToFit());
-    api.sizeColumnsToFit();
-  }
+  const getRowStyle = ({ data }: RowClassParams) => {
+    // https://www.ag-grid.com/react-data-grid/row-styles/
+    if (data.active) {
+      return { background: 'lightblue' };
+    }
+  };
 
-  const onFirstDataRendered = ({ api }) => api.sizeColumnsToFit();
-  const onGridSizeChanged = ({ api }) => api.sizeColumnsToFit();
+  const onGridReady = ({ api }: GridReadyEvent) => api.sizeColumnsToFit();
+  const onFirstDataRendered = ({ api }: FirstDataRenderedEvent) => api.sizeColumnsToFit();
+  const onGridSizeChanged = ({ api }: GridSizeChangedEvent) => api.sizeColumnsToFit();
+
+  const onRowDoubleClicked = ({ data }: RowDoubleClickedEvent): void => {
+    rpcService.call('MPD.play', [data.pos]).catch(errorHandler);
+  };
 
   return (
     // <pre>{JSON.stringify(state, null, 2)}</pre>
     <AgGridReact
-      className="ag-theme-alpine"
+      className="ag-theme-fresh"
+      domLayout="autoHeight"
+      getRowStyle={getRowStyle}
       columnDefs={columnDefs}
       defaultColDef={defaultColDef}
       rowDragManaged={true}
@@ -53,6 +65,7 @@ const Playlist: React.FC = ({ songid }) => {
       onFirstDataRendered={onFirstDataRendered}
       onGridSizeChanged={onGridSizeChanged}
       rowData={state}
+      onRowDoubleClicked={onRowDoubleClicked}
     />
   );
 };

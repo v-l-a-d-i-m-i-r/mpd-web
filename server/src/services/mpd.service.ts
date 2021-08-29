@@ -172,8 +172,8 @@ class MPDService {
     return { not_implemented: true };
   }
 
-  async play() {
-    const command = 'play';
+  async play(songpos?: string | number) {
+    const command = songpos !== undefined ? `play ${songpos}` : 'play';
     await this.send(command);
 
     return {};
@@ -207,8 +207,8 @@ class MPDService {
     return {};
   }
 
-  async seekcur(position: number) {
-    const command = `seekcur ${position}`;
+  async seekcur(time: string | number) {
+    const command = `seekcur ${time}`;
 
     await this.send(command);
 

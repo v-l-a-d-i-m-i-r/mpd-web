@@ -1,14 +1,10 @@
 export const generateId = (): string => Math.random().toString(36).substr(2, 9);
 
-export const fancyTimeFormat = (duration: number): string => {
-  // Hours, minutes and seconds
-  const hrs = ~~(duration / 3600);
-  const mins = ~~((duration % 3600) / 60);
-  const secs = ~~duration % 60;
+// https://stackoverflow.com/questions/3733227/javascript-seconds-to-minutes-and-seconds
+export const fancyTimeFormat = (duration = 0): string => {
+  const hours = Math.floor(duration / 3600).toString().padStart(2, '0');
+  const minutes = Math.floor((duration % 3600) / 60).toString().padStart(2, '0');
+  const seconds = Math.floor(duration % 60).toString().padStart(2, '0');
 
-  // Output like "1:01" or "4:03:59" or "123:03:59"
-  const hoursResult = hrs > 0 ? `${hrs}:${mins < 10 ? '0' : ''}` : '';
-  const minutesResult = `${mins}:${secs < 10 ? '0' : ''}`;
-
-  return `${hoursResult}${minutesResult}${secs}`;
+  return `${hours}:${minutes}:${seconds}`;
 };

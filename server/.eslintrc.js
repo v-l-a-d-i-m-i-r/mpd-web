@@ -10,6 +10,7 @@ module.exports = {
   },
   ignorePatterns: ['node_modules', 'dist', '.eslintrc.js'],
   rules: {
+    'max-len': ['error', { code: 150 }],
     'object-curly-newline': ['error', { consistent: true }],
   }
 };

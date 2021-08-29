@@ -4,7 +4,10 @@ export type JSONRPCRequest = {
   id: Id;
   jsonrpc: '2.0';
   method: string;
-  params: Record<string, any>
+  params: {
+    args: (string | number)[];
+    opts: Record<string, string | number>;
+  }
 };
 
 export type JSONRPCSuccessResponse = {

@@ -15,32 +15,22 @@ const Playback: React.FC = ({ state, repeat, song, playlistlength, elapsed, dura
   const isNextButtonDisabled = repeat ? false : song === playlistlength - 1;
 
   const playButtonText = (state === 'pause' || state === 'stop') ? 'Play' : 'Pause';
-  const onPlayButtonClick = () => {
-    const promise = isPlaying ? rpcService.call({ method: 'MPD.pause' }) : rpcService.call({ method: 'MPD.play' });
 
-    promise.catch(errorHandler);
-  };
-
-  const onPrevButtonClick = () => {
-    rpcService.call({ method: 'MPD.previous' }).catch(errorHandler);
-  };
-
-  const onNextButtonClick = () => {
-    rpcService.call({ method: 'MPD.next' }).catch(errorHandler);
-  };
+  const onPlayButtonClick = () => rpcService.call(isPlaying ? 'MPD.pause' : 'MPD.play').catch(errorHandler);
+  const onPrevButtonClick = () => rpcService.call('MPD.previous').catch(errorHandler);
+  const onNextButtonClick = () => rpcService.call('MPD.next').catch(errorHandler);
 
   const onSeekCurrent = (value: number) => {
-    rpcService.call({ method: 'MPD.seekCurrent', args: [value] }).catch(errorHandler);
+    rpcService.call('MPD.seekCurrent', [value]).catch(errorHandler);
   };
 
   return (
     <section className="playback">
-      <span>Elapsed {fancyTimeFormat(elapsed)}</span>
-      <span>Duration {fancyTimeFormat(duration)}</span>
+      <span>{fancyTimeFormat(elapsed)}/{fancyTimeFormat(duration)}</span>
 
       <input
         disabled={isStream}
-        // style={{ display: 'block', width: '100%' }}
+        style={{ display: 'block', width: '100%' }}
         type="range"
         min={0}
         max={isStream ? 0 : duration}

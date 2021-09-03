@@ -1,0 +1,31 @@
+.playback {
+
+  .button-bar {
+    text-align: center;
+
+    button {
+      border-radius: 50%;
+      background: transparent;
+      margin: 0 10px;
+      border-width: 2px;
+
+    }
+
+    .play-button {
+      width: 40px;
+      height: 40px;
+    }
+
+    .prev-button,
+    .next-button {
+      width: 30px;
+      height: 30px;
+    }
+
+    .repeat-button,
+    .random-button {
+      width: 25px;
+      height: 25px;
+    }
+  }
+}

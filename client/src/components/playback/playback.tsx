@@ -1,6 +1,9 @@
 import React from 'react';
+
 import RPCService from '../../services/rpc.service';
 import { fancyTimeFormat } from '../../utils';
+
+import './playback.scss';
 
 const rpcService = new RPCService();
 
@@ -13,8 +16,6 @@ const Playback: React.FC = ({ state, repeat, song, playlistlength, elapsed, dura
   const isPaused = state === 'pause';
   const isPrevButtonDisabled = repeat ? false : song === 0;
   const isNextButtonDisabled = repeat ? false : song === playlistlength - 1;
-
-  const playButtonText = (state === 'pause' || state === 'stop') ? 'Play' : 'Pause';
 
   const onPlayButtonClick = () => rpcService.call(isPlaying ? 'MPD.pause' : 'MPD.play').catch(errorHandler);
   const onPrevButtonClick = () => rpcService.call('MPD.previous').catch(errorHandler);
@@ -39,31 +40,47 @@ const Playback: React.FC = ({ state, repeat, song, playlistlength, elapsed, dura
         onMouseUp={(event: React.MouseEvent<HTMLButtonElement>) => onSeekCurrent(event.target.value)}
       />
 
-      <button
-        disabled={isPrevButtonDisabled}
-        type="button"
-        className="prev-button"
-        onClick={() => onPrevButtonClick()}
-      >
-        Prev
-      </button>
+      <div className="button-bar">
+        <button
+          type="button"
+          className="repeat-button"
+        >
+          <i className="fas fa-retweet" />
+        </button>
 
-      <button
-        type="button"
-        className="play-button"
-        onClick={() => onPlayButtonClick()}
-      >
-        {playButtonText}
-      </button>
+        <button
+          disabled={isPrevButtonDisabled}
+          type="button"
+          className="prev-button"
+          onClick={() => onPrevButtonClick()}
+        >
+          <i className="fas fa-step-backward" />
+        </button>
 
-      <button
-        disabled={isNextButtonDisabled}
-        type="button"
-        className="next-button"
-        onClick={() => onNextButtonClick()}
-      >
-        Next
-      </button>
+        <button
+          type="button"
+          className="play-button"
+          onClick={() => onPlayButtonClick()}
+        >
+          <i className={`fas ${isPaused || isStopped ? 'fa-play' : 'fa-pause'}`} />
+        </button>
+
+        <button
+          disabled={isNextButtonDisabled}
+          type="button"
+          className="next-button"
+          onClick={() => onNextButtonClick()}
+        >
+          <i className="fas fa-step-forward" />
+        </button>
+
+        <button
+          type="button"
+          className="repeat-button"
+        >
+          <i className="fas fa-random" />
+        </button>
+      </div>
     </section>
   );
 };

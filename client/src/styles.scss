@@ -1,7 +1,17 @@
+$main-color: #2c2c2c;
+$secondary-color: #f4f4f4;
+$active-color: #0075ff;
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  color: #2c2c2c;
+  font-family: sans-serif;
+}
+
+*:focus {
+  outline: none;
 }
 
 html, body, #root {
@@ -9,4 +19,12 @@ html, body, #root {
   width: 100%;
   margin: 0;
   -webkit-overflow-scrolling: touch;
+}
+
+button {
+  border-color: $main-color;
+}
+
+body {
+  // background-color: #f4f4f4;
 }

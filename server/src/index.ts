@@ -6,6 +6,7 @@ import Logger from './logger/logger';
 import Matcher from './utils/matcher';
 
 import JsonRpcHttpController from './controllers/jsonrpc-http.controller';
+import StaticController from './controllers/static.controller';
 
 const dev = NODE_ENV !== 'production';
 
@@ -13,6 +14,10 @@ const routes = [
   {
     when: (req: IncomingMessage) => (req.url === '/api/jsonrpc' && req.method === 'POST'),
     then: (req: IncomingMessage, res: ServerResponse, { logger }: { logger: ILogger }) => new JsonRpcHttpController({ logger }).execute(req, res),
+  },
+  {
+    when: (req: IncomingMessage) => true,
+    then: (req: IncomingMessage, res: ServerResponse, { logger }: { logger: ILogger }) => new StaticController({ logger }).execute(req, res),
   },
 ];
 

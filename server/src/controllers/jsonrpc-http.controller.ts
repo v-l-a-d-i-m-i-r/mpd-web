@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 import { IncomingMessage, ServerResponse } from 'http';
 import MPDService from '../services/mpd.service';
 import { JSONRPCRequest } from '../types/jsonrpc';

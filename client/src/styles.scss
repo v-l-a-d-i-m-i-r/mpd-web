@@ -1,12 +1,17 @@
 $main-color: #2c2c2c;
 $secondary-color: #f4f4f4;
+
+// $main-color: #f4f4f4;
+// $secondary-color: #2c2c2c;
+
+
 $active-color: #0075ff;
+$disabled-color: #c5c5c5;
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  color: #2c2c2c;
   font-family: sans-serif;
 }
 
@@ -21,10 +26,38 @@ html, body, #root {
   -webkit-overflow-scrolling: touch;
 }
 
-button {
-  border-color: $main-color;
+body {
+  background: $secondary-color;
 }
 
-body {
-  // background-color: #f4f4f4;
+span {
+  color: $main-color;
+}
+
+button {
+  color: $main-color;
+  background: transparent;
+  border-color: $main-color;
+  border-style: solid;
+
+  i {
+    color: $main-color;
+  }
+
+  &:hover,
+  &:active,
+  &.active {
+    border-color: $active-color;
+    color: $active-color;
+
+    i {
+      color: $active-color;
+    }
+  }
+}
+
+.wrapper {
+  width: 95%;
+  margin: 0 auto;
+  padding: 10px 0;
 }

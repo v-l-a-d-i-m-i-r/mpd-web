@@ -3,10 +3,10 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 // https://codesandbox.io/s/k260nyxq9v?file=/index.js
 // fake data generator
-const getItems = count =>
+const getItems = (count) =>
   Array.from({ length: count }, (v, k) => k).map(k => ({
     id: `item-${k}`,
-    content: `item ${k}`
+    content: `item ${k}`,
   }));
 
 // a little function to help us with reordering the result
@@ -36,7 +36,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   ...draggableStyle
 });
 
-const getListStyle = isDraggingOver => ({
+const getListStyle = (isDraggingOver) => ({
   background: isDraggingOver ? 'lightblue' : 'lightgrey',
   padding: grid,
   width: '100%',
@@ -46,7 +46,7 @@ export default class List extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      items: getItems(10)
+      items: getItems(10),
     };
     this.onDragEnd = this.onDragEnd.bind(this);
   }
@@ -60,11 +60,11 @@ export default class List extends Component {
     const items = reorder(
       this.state.items,
       result.source.index,
-      result.destination.index
+      result.destination.index,
     );
 
     this.setState({
-      items
+      items,
     });
   }
 
@@ -73,7 +73,7 @@ export default class List extends Component {
   render() {
     return (
       <DragDropContext onDragEnd={this.onDragEnd}>
-        <Droppable droppableId='droppable'>
+        <Droppable droppableId="droppable">
           {(provided, snapshot) => (
             <ul
               {...provided.droppableProps}

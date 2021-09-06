@@ -5,6 +5,7 @@ import RPCService from '../../services/rpc.service';
 import Playback from '../playback/playback';
 import Playlist from '../playlist/playlist';
 import List from '../list/list';
+import Menu from '../menu/menu';
 
 const interval = 1000;
 
@@ -68,6 +69,7 @@ const App: React.FC = () => {
         duration={status.duration}
       />
       <Playlist songid={status.songid} />
+      <Menu />
     </>
   );
 };

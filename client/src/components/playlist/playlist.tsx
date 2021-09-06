@@ -11,13 +11,13 @@ const rpcService = new RPCService();
 
 const errorHandler = (error: Error) => console.error(error);
 
-const columnDefs = [
-  { field: 'path', rowDrag: true },
-];
-const defaultColDef = {};
-const initialState = [];
-
 const Playlist: React.FC = ({ songid }) => {
+  const columnDefs = [
+    { field: 'path', rowDrag: true },
+  ];
+  const defaultColDef = {};
+  const initialState = [];
+
   const [state, setState] = useState(initialState);
 
   useEffect(() => {

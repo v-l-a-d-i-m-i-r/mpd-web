@@ -12,7 +12,7 @@
     "resolveJsonModule": true,
     "downlevelIteration": true,
     "paths": {
-      "*": ["src/*"]
+      "*": ["src/*", "node_modules/@types"]
     },
     "lib": [
       "esnext",

@@ -13,6 +13,12 @@ $disabled-color: #c5c5c5;
   padding: 0;
   box-sizing: border-box;
   font-family: sans-serif;
+  color: $main-color;
+  font-size: 14px;
+  &:active,
+  &.active {
+    color: $active-color;
+  }
 }
 
 *:focus {
@@ -30,29 +36,18 @@ body {
   background: $secondary-color;
 }
 
-span {
-  color: $main-color;
-}
-
 button {
-  color: $main-color;
+  // color: $main-color;
   background: transparent;
   border-color: $main-color;
   border-style: solid;
+}
 
-  i {
-    color: $main-color;
-  }
-
-  &:hover,
-  &:active,
-  &.active {
-    border-color: $active-color;
+button,
+tbody tr {
+  &:hover {
     color: $active-color;
-
-    i {
-      color: $active-color;
-    }
+    border-color: $active-color;
   }
 }
 
@@ -60,4 +55,19 @@ button {
   width: 95%;
   margin: 0 auto;
   padding: 10px 0;
+}
+
+
+thead tr {
+  background-color: darken($secondary-color, 1.5%);
+}
+
+tbody tr {
+  &:nth-child(even) {
+    background-color: darken($secondary-color, 1.5%);
+  }
+
+  &:nth-child(odd) {
+    background-color: lighten($secondary-color, 1.5%);
+  }
 }

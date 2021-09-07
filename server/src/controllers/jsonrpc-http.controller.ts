@@ -35,6 +35,10 @@ const routes = [
     when: (method: string) => (method === 'MPD.seekCurrent'),
     then: (deps: ActionDependencies, params: JSONRPCRequest['params']) => new MPDAction(deps).seekCurrent(params),
   },
+  {
+    when: (method: string) => (method === 'MPD.reorder'),
+    then: (deps: ActionDependencies, params: JSONRPCRequest['params']) => new MPDAction(deps).reorder(params),
+  },
 ];
 
 const router = new Matcher(routes);

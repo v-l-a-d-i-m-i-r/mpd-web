@@ -249,6 +249,14 @@ class MPDService {
 
     return { ...status, songInfo: playlistInfo[0] };
   }
+
+  async move(from: string | number, to: string | number) {
+    const command = `move ${from} ${to}`;
+
+    await this.send(command);
+
+    return {};
+  }
 }
 
 export default MPDService;

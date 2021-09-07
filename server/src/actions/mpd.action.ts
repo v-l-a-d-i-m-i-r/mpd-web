@@ -61,6 +61,14 @@ class MPDAction {
 
     return this.mpdService.seekcur(time);
   }
+
+  async reorder({ args }: ActionParams) {
+    const [from, to] = args || [];
+
+    await this.mpdService.move(from, to);
+
+    return this.getPlaylistInfo();
+  }
 }
 
 export default MPDAction;

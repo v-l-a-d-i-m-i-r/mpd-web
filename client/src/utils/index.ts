@@ -8,3 +8,9 @@ export const fancyTimeFormat = (duration = 0): string => {
 
   return `${hours}:${minutes}:${seconds}`;
 };
+
+export const classNames = (conditions: Record<string, boolean>): string => Object
+  .entries(conditions)
+  .filter(([_, condition]) => Boolean(condition))
+  .map(([className]) => className)
+  .join(' ');

@@ -31,7 +31,7 @@ class RPCService {
     });
 
     const parsedResponse = await response.json();
-    console.log(parsedResponse);
+    // console.log(parsedResponse);
 
     if (parsedResponse.result) return parsedResponse.result as RPCCallResponse;
 

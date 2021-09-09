@@ -32,6 +32,14 @@ html, body, #root {
   -webkit-overflow-scrolling: touch;
 }
 
+#root {
+  display: flex;
+  flex-direction: column;
+  align-content: stretch;
+  justify-content: space-between;
+  align-items: stretch;
+}
+
 body {
   background: $secondary-color;
 }
@@ -55,6 +63,15 @@ tbody tr {
   width: 95%;
   margin: 0 auto;
   padding: 10px 0;
+}
+
+section.active {
+  flex-grow: 1;
+  overflow: auto;
+}
+
+i {
+  color: inherit;
 }
 
 

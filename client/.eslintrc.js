@@ -14,6 +14,7 @@ module.exports = {
     'max-len': ['error', { code: 150 }],
     'react/prop-types': 0,
     'object-curly-newline': ['error', { consistent: true }],
+    'prefer-object-spread': 0,
     'import/extensions': [
       'error',
       'ignorePackages',

@@ -1,0 +1,50 @@
+$border-style: groove;
+$border-width: 1px;
+
+.playlist {
+  table {
+    width: 100%;
+    table-layout: fixed;
+    // overflow-wrap: break-word;
+    border-collapse: collapse;
+    border-style: $border-style;
+    border-width: $border-width;
+    border-color: inherit;
+  }
+
+  th {
+    border-style: $border-style;
+    border-width: $border-width;
+  }
+
+  td {
+    border-left-style: $border-style;
+    border-left-width: $border-width;
+    border-right-style: $border-style;
+    border-right-width: $border-width;
+  }
+
+  th,
+  td {
+    padding: 2px 4px;
+    text-align: left;
+    color: inherit;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .position {
+    width: 30px;
+  }
+
+  .time {
+    width: 64px;
+  }
+
+  tbody {
+    .position {
+      text-align: right;
+    }
+  }
+}

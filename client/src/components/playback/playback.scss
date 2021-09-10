@@ -3,33 +3,44 @@
     text-align: center;
 
     button {
-      border-radius: 50%;
       margin: 0 15px;
+      vertical-align: middle;
+      border-radius: 50%;
       border-width: 2px;
+      span {
+        color: inherit;
+        // font-size: inherit;
+        vertical-align: text-top;
+      }
     }
 
     .play-button {
       width: 40px;
       height: 40px;
-      font-size: 20px;
+
+      span {
+        font-size: 34px;
+      }
     }
 
     .prev-button,
     .next-button {
       width: 35px;
       height: 35px;
-      font-size: 17px;
+
+      span {
+        font-size: 30px;
+      }
     }
 
     .repeat-button,
     .random-button {
       width: 30px;
       height: 30px;
-      font-size: 15px;
-    }
-  }
 
-  i {
-    color: inherit;
+      span {
+        font-size: 22px;
+      }
+    }
   }
 }

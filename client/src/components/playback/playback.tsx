@@ -45,7 +45,7 @@ const Playback: React.FC = ({ state, repeat, song, playlistlength, elapsed, dura
           type="button"
           className="repeat-button"
         >
-          <i className="fa fa-retweet" />
+          <span className="material-icons">repeat</span>
         </button>
 
         <button
@@ -54,7 +54,7 @@ const Playback: React.FC = ({ state, repeat, song, playlistlength, elapsed, dura
           className="prev-button"
           onClick={() => onPrevButtonClick()}
         >
-          <i className="fa fa-step-backward" />
+          <span className="material-icons">skip_previous</span>
         </button>
 
         <button
@@ -62,7 +62,8 @@ const Playback: React.FC = ({ state, repeat, song, playlistlength, elapsed, dura
           className="play-button"
           onClick={() => onPlayButtonClick()}
         >
-          <i className={`fa ${isPaused || isStopped ? 'fa-play' : 'fa-pause'}`} />
+          <span className="material-icons">{isPaused || isStopped ? 'play_arrow' : 'pause'}</span>
+          {/* <i className={`fa ${isPaused || isStopped ? 'fa-play' : 'fa-pause'}`} /> */}
         </button>
 
         <button
@@ -71,14 +72,14 @@ const Playback: React.FC = ({ state, repeat, song, playlistlength, elapsed, dura
           className="next-button"
           onClick={() => onNextButtonClick()}
         >
-          <i className="fa fa-step-forward" />
+          <span className="material-icons">skip_next</span>
         </button>
 
         <button
           type="button"
           className="repeat-button"
         >
-          <i className="fa fa-random" />
+          <span className="material-icons">shuffle</span>
         </button>
       </div>
     </div>

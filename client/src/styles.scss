@@ -48,6 +48,7 @@ button {
   // color: $main-color;
   background: transparent;
   border-color: $main-color;
+  // border-style: solid;
   border-style: solid;
 }
 
@@ -65,9 +66,23 @@ tbody tr {
   padding: 10px 0;
 }
 
-section.active {
+.playback-section {
+  border-bottom-style: groove;
+  border-bottom-width: 1px;
+}
+
+.content-section {
   flex-grow: 1;
   overflow: auto;
+}
+
+.tabs-section {
+  border-top-style: groove;
+  border-top-width: 1px;
+
+  button {
+    border-style: none;
+  }
 }
 
 i {

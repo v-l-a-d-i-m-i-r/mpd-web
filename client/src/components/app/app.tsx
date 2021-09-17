@@ -5,12 +5,12 @@ import { classNames } from '../../utils';
 
 import Playback from '../playback/playback';
 import Playlist from '../playlist/playlist';
-// import Menu from '../menu/menu';
+import Menu from '../menu/menu';
 
 const interval = 1000;
 
 const initialState = {
-  content: 'playlist',
+  activeTabName: 'playlist',
   playback: {
     repeat: 0,
     random: 0,
@@ -65,11 +65,11 @@ const App: React.FC = () => {
     };
   }, []);
 
-  const setContent = (content: string) => setState((currentState) => ({ ...currentState, content: content !== currentState.content ? content : '' }));
+  const setActiveTab = (activeTabName: string) => setState((currentState) => ({ ...currentState, activeTabName }));
 
   return (
     <>
-      <section className={classNames({ active: !state.content })}>
+      <section className="playback-section">
         <div className="wrapper">
           <Playback
             state={state.playback.state}
@@ -81,25 +81,14 @@ const App: React.FC = () => {
           />
         </div>
       </section>
-      <section className={classNames({ active: Boolean(state.content) })}>
+      <section className="content-section">
         <div className="wrapper">
-          { state.content === 'playlist' ? <Playlist songid={state.playback.songid} /> : '' }
+          { state.activeTabName === 'playlist' ? <Playlist songid={state.playback.songid} /> : '' }
         </div>
       </section>
-      <section>
+      <section className="tabs-section">
         <div className="wrapper">
-          <div className="menu">
-            <button
-              type="button"
-              className={classNames({ active: state.content === 'playlist' })}
-              onClick={() => setContent('playlist')}
-            >
-              <i className="fas fa-th-list" />
-            </button>
-            <button type="button">
-              <i className="fas fa-cog" />
-            </button>
-          </div>
+          <Menu activeTabName={state.activeTabName} onTabClick={setActiveTab} />
         </div>
       </section>
     </>

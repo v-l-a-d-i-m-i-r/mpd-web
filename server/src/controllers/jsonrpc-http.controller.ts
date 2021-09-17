@@ -9,11 +9,11 @@ import Matcher from '../utils/matcher';
 const routes = [
   {
     when: (method: string) => (method === 'MPD.getExtendedStatus'),
-    then: (deps: ActionDependencies, params: JSONRPCRequest['params']) => new MPDAction(deps).getExtendedStatus(),
+    then: (deps: ActionDependencies) => new MPDAction(deps).getExtendedStatus(),
   },
   {
     when: (method: string) => (method === 'MPD.getPlaylistInfo'),
-    then: (deps: ActionDependencies) => new MPDAction(deps).getPlaylistInfo(),
+    then: (deps: ActionDependencies, params: JSONRPCRequest['params']) => new MPDAction(deps).getPlaylistInfo(params),
   },
   {
     when: (method: string) => (method === 'MPD.play'),
@@ -70,7 +70,7 @@ class JSONRPCHTTPController {
           const routeHandler = router.match(method);
 
           if (routeHandler) {
-            const result = await routeHandler({ logger, mpdService }, params);
+            const result = await routeHandler({ logger, mpdService }, params) || {};
 
             response.writeHead(200, { 'Content-Type': 'application/json' });
             response.end(JSON.stringify({ id, jsonrpc, result }));

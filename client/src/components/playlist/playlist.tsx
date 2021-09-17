@@ -125,6 +125,7 @@ const Playlist: React.FC<PlaylistProps> = ({ songid }) => {
                             {position}
                           </td>
                           <td className="title">
+                            <span className="icon material-icons">{item.type === 'stream' ? 'podcasts' : 'audiotrack'}</span>
                             {title}
                           </td>
                           <td className="time">

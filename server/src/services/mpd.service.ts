@@ -32,7 +32,7 @@ type NormalizedPlaylistItem = {
   pos: number;
   id: number;
   name?: string;
-  lastModified?: string;
+  lastmodified?: string;
   artist?: string;
   album?: string;
   genre?: string;
@@ -82,7 +82,7 @@ function mapOkBufferToObject(buffer: Buffer): Record<string, string | number> {
 
 function mapACKBufferToObject(buffer: Buffer): ACKObject {
   const errorString = buffer.toString();
-  const [fullString, code, index, command, message] = /^ACK\s\[(\d+)@(\d+)\]\s{(\w*)}\s(.+)\n$/.exec(errorString) || [];
+  const [_, code, index, command, message] = /^ACK\s\[(\d+)@(\d+)\]\s{(\w*)}\s(.+)\n$/.exec(errorString) || [];
 
   return {
     code: parseInt(code, 10),
@@ -150,7 +150,7 @@ class MPDService {
     return result;
   }
 
-  async playlistinfo(args?: string[]): Promise<PlaylistItem[]> {
+  async playlistinfo(args?: (string | number)[]): Promise<PlaylistItem[]> {
     const songpos = args && args[0];
     const command = songpos ? `playlistinfo ${songpos}` : 'playlistinfo';
     const resultBuffer = await this.send(command);
@@ -174,86 +174,34 @@ class MPDService {
 
   async play(songpos?: string | number) {
     const command = songpos !== undefined ? `play ${songpos}` : 'play';
-    await this.send(command);
 
-    return {};
+    await this.send(command);
   }
 
   async pause() {
-    const command = 'pause';
-    await this.send(command);
-
-    return {};
+    await this.send('pause');
   }
 
   async next() {
-    const command = 'next';
-    await this.send(command);
+    await this.send('next');
 
     return {};
   }
 
   async previous() {
-    const command = 'previous';
-    await this.send(command);
-
-    return {};
+    await this.send('previous');
   }
 
   async stop() {
-    const command = 'stop';
-    await this.send(command);
-
-    return {};
+    await this.send('stop');
   }
 
   async seekcur(time: string | number) {
-    const command = `seekcur ${time}`;
-
-    await this.send(command);
-
-    return {};
-  }
-
-  async getPlaylistInfo(args?: string[]): Promise<NormalizedPlaylistItem[]> {
-    const playlistInfo = await this.playlistinfo(args);
-
-    return playlistInfo.map((playlistItem) => {
-      // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
-      const type = playlistItem.file.match(/^http/) ? 'stream' : 'file';
-
-      const result = {
-        type,
-        path: type === 'file' ? `/${playlistItem.file}` : playlistItem.file,
-        title: playlistItem.Title,
-        pos: playlistItem.Pos,
-        id: playlistItem.Id,
-      };
-
-      if (playlistItem['Last-Modified']) Object.assign(result, { lastModified: playlistItem['Last-Modified'] });
-
-      Object
-        .keys(playlistItem)
-        .filter((key) => !['file', 'Title', 'Pos', 'Id', 'Last-Modified'].includes(key))
-        .forEach((key) => {
-          Object.assign(result, { [key.toLowerCase()]: playlistItem[key as keyof PlaylistItem] });
-        });
-
-      return result;
-    });
-  }
-
-  async getExtendedStatus() {
-    const status = await this.status();
-    const playlistInfo = await this.getPlaylistInfo([status.song as string]);
-
-    return { ...status, songInfo: playlistInfo[0] };
+    await this.send(`seekcur ${time}`);
   }
 
   async move(from: string | number, to: string | number) {
-    const command = `move ${from} ${to}`;
-
-    await this.send(command);
+    await this.send(`move ${from} ${to}`);
 
     return {};
   }

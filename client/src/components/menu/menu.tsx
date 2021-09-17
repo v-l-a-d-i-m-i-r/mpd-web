@@ -1,14 +1,25 @@
 import React from 'react';
 
+import { classNames } from '../../utils';
+
 import './menu.scss';
 
-const Menu: React.FC = () => (
+type MenuProps = {
+  activeTabName: string;
+  onTabClick: (string) => void,
+};
+
+const Menu: React.FC<MenuProps> = ({ activeTabName, onTabClick }) => (
   <div className="menu">
-    <button type="button">
-      <i className="fas fa-th-list" />
+    <button
+      type="button"
+      className={classNames({ active: activeTabName === 'playlist' })}
+      onClick={() => onTabClick('playlist')}
+    >
+      <span className="material-icons">queue_music</span>
     </button>
     <button type="button">
-      <i className="fas fa-cog" />
+      <span className="material-icons">folder_open</span>
     </button>
   </div>
 );

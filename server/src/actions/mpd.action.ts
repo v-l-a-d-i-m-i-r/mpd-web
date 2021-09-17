@@ -18,8 +18,17 @@ class MPDAction {
     return this.mpdService.status();
   }
 
-  getExtendedStatus() {
-    return this.mpdService.getExtendedStatus();
+  async getExtendedStatus() {
+    const status = await this.getStatus();
+    const [{ type, path, title, name }] = await this.getPlaylistInfo({ args: [status.song as string] }) || [{}];
+
+    return {
+      ...status,
+      songtype: type,
+      songpath: path,
+      songtitle: title,
+      songname: name,
+    };
   }
 
   getFiles() {
@@ -30,8 +39,21 @@ class MPDAction {
     return this.mpdService.listplaylists();
   }
 
-  getPlaylistInfo() {
-    return this.mpdService.getPlaylistInfo();
+  async getPlaylistInfo({ args }: ActionParams): Promise<Record<string, string | number>[]> {
+    const playlistInfo = await this.mpdService.playlistinfo(args);
+
+    return playlistInfo.map((playlistItem) => {
+      // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
+      const type = playlistItem.file.match(/^http/) ? 'stream' : 'file';
+      const path = type === 'file' ? `/${playlistItem.file}` : playlistItem.file;
+
+      return {
+        type,
+        path,
+        ...Object.entries(playlistItem)
+          .reduce((acc, [key, value]) => ({ ...acc, [key.replace('-', '').toLowerCase()]: value }), {}),
+      };
+    });
   }
 
   pause() {
@@ -67,7 +89,7 @@ class MPDAction {
 
     await this.mpdService.move(from, to);
 
-    return this.getPlaylistInfo();
+    return this.getPlaylistInfo({});
   }
 }
 

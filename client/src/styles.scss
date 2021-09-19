@@ -1,8 +1,8 @@
-$main-color: #2c2c2c;
-$secondary-color: #f4f4f4;
+// $main-color: #2c2c2c;
+// $secondary-color: #f4f4f4;
 
-// $main-color: #f4f4f4;
-// $secondary-color: #2c2c2c;
+$main-color: #f4f4f4;
+$secondary-color: #2c2c2c;
 
 
 $active-color: #0075ff;
@@ -14,7 +14,7 @@ $disabled-color: #c5c5c5;
   box-sizing: border-box;
   font-family: sans-serif;
   color: $main-color;
-  font-size: 14px;
+  font-size: 16px;
   &:active,
   &.active {
     color: $active-color;
@@ -47,9 +47,9 @@ body {
 button {
   // color: $main-color;
   background: transparent;
-  border-color: $main-color;
+  // border-color: $main-color;
   // border-style: solid;
-  border-style: solid;
+  border-style: none;
 }
 
 button,
@@ -85,8 +85,9 @@ tbody tr {
   }
 }
 
-i {
+.icon {
   color: inherit;
+  vertical-align: middle;
 }
 
 

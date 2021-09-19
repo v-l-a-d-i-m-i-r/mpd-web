@@ -29,6 +29,7 @@ const initialState = {
     nextsong: 0,
     nextsongid: 0,
     duration: 0,
+    songtitle: '',
   },
 };
 
@@ -78,6 +79,7 @@ const App: React.FC = () => {
             playlistlength={state.playback.playlistlength}
             elapsed={state.playback.elapsed}
             duration={state.playback.duration}
+            songtitle={state.playback.songtitle}
           />
         </div>
       </section>

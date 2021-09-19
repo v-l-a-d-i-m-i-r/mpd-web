@@ -1,4 +1,9 @@
 .playback {
+  .title-bar {
+    display: flex;
+    justify-content: space-between;
+  }
+
   .button-bar {
     text-align: center;
 
@@ -18,7 +23,7 @@
       width: 40px;
       height: 40px;
 
-      span {
+      .icon {
         font-size: 34px;
       }
     }
@@ -28,7 +33,7 @@
       width: 35px;
       height: 35px;
 
-      span {
+      .icon {
         font-size: 30px;
       }
     }
@@ -38,7 +43,7 @@
       width: 30px;
       height: 30px;
 
-      span {
+      .icon {
         font-size: 22px;
       }
     }

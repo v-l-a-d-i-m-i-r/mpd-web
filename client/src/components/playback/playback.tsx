@@ -9,7 +9,7 @@ const rpcService = new RPCService();
 
 const errorHandler = (error: Error) => console.error(error);
 
-const Playback: React.FC = ({ state, repeat, song, playlistlength, elapsed, duration }) => {
+const Playback: React.FC = ({ state, repeat, song, playlistlength, elapsed, duration, songtitle }) => {
   const isStream = !duration;
   const isStopped = state === 'stop';
   const isPlaying = state === 'play';
@@ -27,7 +27,11 @@ const Playback: React.FC = ({ state, repeat, song, playlistlength, elapsed, dura
 
   return (
     <div className="playback">
-      <span>{fancyTimeFormat(elapsed)}/{fancyTimeFormat(duration)}</span>
+      <div className="title-bar">
+        <span className="elapsed">{fancyTimeFormat(elapsed)}</span>
+        <span className="title">{songtitle}</span>
+        <span className="duration">{fancyTimeFormat(duration)}</span>
+      </div>
 
       <input
         disabled={isStream}
@@ -45,7 +49,7 @@ const Playback: React.FC = ({ state, repeat, song, playlistlength, elapsed, dura
           type="button"
           className="repeat-button"
         >
-          <span className="material-icons">repeat</span>
+          <span className="icon material-icons">repeat</span>
         </button>
 
         <button
@@ -54,7 +58,7 @@ const Playback: React.FC = ({ state, repeat, song, playlistlength, elapsed, dura
           className="prev-button"
           onClick={() => onPrevButtonClick()}
         >
-          <span className="material-icons">skip_previous</span>
+          <span className="icon material-icons">skip_previous</span>
         </button>
 
         <button
@@ -62,7 +66,7 @@ const Playback: React.FC = ({ state, repeat, song, playlistlength, elapsed, dura
           className="play-button"
           onClick={() => onPlayButtonClick()}
         >
-          <span className="material-icons">{isPaused || isStopped ? 'play_arrow' : 'pause'}</span>
+          <span className="icon material-icons">{isPaused || isStopped ? 'play_arrow' : 'pause'}</span>
           {/* <i className={`fa ${isPaused || isStopped ? 'fa-play' : 'fa-pause'}`} /> */}
         </button>
 
@@ -72,14 +76,14 @@ const Playback: React.FC = ({ state, repeat, song, playlistlength, elapsed, dura
           className="next-button"
           onClick={() => onNextButtonClick()}
         >
-          <span className="material-icons">skip_next</span>
+          <span className="icon material-icons">skip_next</span>
         </button>
 
         <button
           type="button"
           className="repeat-button"
         >
-          <span className="material-icons">shuffle</span>
+          <span className="icon material-icons">shuffle</span>
         </button>
       </div>
     </div>

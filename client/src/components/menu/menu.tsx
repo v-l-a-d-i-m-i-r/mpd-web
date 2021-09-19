@@ -16,10 +16,10 @@ const Menu: React.FC<MenuProps> = ({ activeTabName, onTabClick }) => (
       className={classNames({ active: activeTabName === 'playlist' })}
       onClick={() => onTabClick('playlist')}
     >
-      <span className="material-icons">queue_music</span>
+      <span className="icon material-icons">queue_music</span>
     </button>
     <button type="button">
-      <span className="material-icons">folder_open</span>
+      <span className="icon material-icons">folder_open</span>
     </button>
   </div>
 );

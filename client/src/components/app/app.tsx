@@ -6,6 +6,7 @@ import { classNames } from '../../utils';
 import Playback from '../playback/playback';
 import Playlist from '../playlist/playlist';
 import Menu from '../menu/menu';
+import FileExplorer from '../file-explorer/file-explorer';
 
 const interval = 1000;
 
@@ -86,6 +87,7 @@ const App: React.FC = () => {
       <section className="content-section">
         <div className="wrapper">
           { state.activeTabName === 'playlist' ? <Playlist songid={state.playback.songid} /> : '' }
+          { state.activeTabName === 'file-explorer' ? <FileExplorer /> : '' }
         </div>
       </section>
       <section className="tabs-section">

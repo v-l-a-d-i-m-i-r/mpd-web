@@ -9,7 +9,17 @@ const rpcService = new RPCService();
 
 const errorHandler = (error: Error) => console.error(error);
 
-const Playback: React.FC = ({ state, repeat, song, playlistlength, elapsed, duration, songtitle }) => {
+type PlaybackProps = {
+  state: string;
+  repeat: number;
+  song: number;
+  playlistlength: number;
+  elapsed: number;
+  duration: number;
+  songtitle: string;
+};
+
+const Playback: React.FC<PlaybackProps> = ({ state, repeat, song, playlistlength, elapsed, duration, songtitle }) => {
   const isStream = !duration;
   const isStopped = state === 'stop';
   const isPlaying = state === 'play';
@@ -21,7 +31,7 @@ const Playback: React.FC = ({ state, repeat, song, playlistlength, elapsed, dura
   const onPrevButtonClick = () => rpcService.call('MPD.previous').catch(errorHandler);
   const onNextButtonClick = () => rpcService.call('MPD.next').catch(errorHandler);
 
-  const onSeekCurrent = (value: number) => {
+  const onSeekCurrent = (value: string) => {
     rpcService.call('MPD.seekCurrent', [value]).catch(errorHandler);
   };
 
@@ -40,8 +50,8 @@ const Playback: React.FC = ({ state, repeat, song, playlistlength, elapsed, dura
         min={0}
         max={isStream ? 0 : duration}
         defaultValue={elapsed}
-        onTouchEnd={(event: React.TouchEvent<HTMLButtonElement>) => onSeekCurrent(event.target.value)}
-        onMouseUp={(event: React.MouseEvent<HTMLButtonElement>) => onSeekCurrent(event.target.value)}
+        onTouchEnd={(event: React.TouchEvent<HTMLButtonElement>) => onSeekCurrent((event.target as HTMLButtonElement).value)}
+        onMouseUp={(event: React.MouseEvent<HTMLButtonElement>) => onSeekCurrent((event.target as HTMLButtonElement).value)}
       />
 
       <div className="button-bar">
@@ -67,7 +77,6 @@ const Playback: React.FC = ({ state, repeat, song, playlistlength, elapsed, dura
           onClick={() => onPlayButtonClick()}
         >
           <span className="icon material-icons">{isPaused || isStopped ? 'play_arrow' : 'pause'}</span>
-          {/* <i className={`fa ${isPaused || isStopped ? 'fa-play' : 'fa-pause'}`} /> */}
         </button>
 
         <button

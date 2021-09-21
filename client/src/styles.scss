@@ -8,6 +8,9 @@ $secondary-color: #2c2c2c;
 $active-color: #0075ff;
 $disabled-color: #c5c5c5;
 
+$border-style: groove;
+$border-width: 1px;
+
 * {
   margin: 0;
   padding: 0;
@@ -90,17 +93,57 @@ tbody tr {
   vertical-align: middle;
 }
 
+table {
+  // https://codepen.io/pdg/pen/MayBJK
 
-thead tr {
-  background-color: darken($secondary-color, 1.5%);
-}
+  width: 100%;
+  table-layout: fixed;
+  // overflow-wrap: break-word;
+  border-collapse: collapse;
+  border-style: $border-style;
+  border-width: $border-width;
+  border-color: inherit;
 
-tbody tr {
-  &:nth-child(even) {
+  th,
+  td {
+    padding: 4px 4px;
+    text-align: left;
+    color: inherit;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  th {
+    border-style: $border-style;
+    border-width: $border-width;
+  }
+
+  td {
+    border-left-style: $border-style;
+    border-left-width: $border-width;
+    border-right-style: $border-style;
+    border-right-width: $border-width;
+
+    .icon {
+      font-size: 16px;
+      padding-right: 5px;
+      vertical-align: text-bottom;
+      color: inherit;
+    }
+  }
+
+  thead tr {
     background-color: darken($secondary-color, 1.5%);
   }
 
-  &:nth-child(odd) {
-    background-color: lighten($secondary-color, 1.5%);
+  tbody tr {
+    &:nth-child(even) {
+      background-color: darken($secondary-color, 1.5%);
+    }
+
+    &:nth-child(odd) {
+      background-color: lighten($secondary-color, 1.5%);
+    }
   }
 }

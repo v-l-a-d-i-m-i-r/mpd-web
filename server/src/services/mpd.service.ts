@@ -4,6 +4,8 @@ import MPDClient from '../clients/mpd.client';
 import ACKError from '../errors/ack.error';
 import ILogger from '../types/logger';
 
+type CommonObject = Record<string, string | number>;
+
 type ACKObject = {
   code: number;
   index: number;
@@ -11,7 +13,7 @@ type ACKObject = {
   message: string;
 };
 
-type PlaylistItem = {
+type FileObject = {
   file: string;
   Title: string;
   Pos: number;
@@ -23,6 +25,26 @@ type PlaylistItem = {
   Genre?: string;
   Time?: number;
   duration?: number;
+};
+
+type FSObject = {
+  file?: string;
+  directory?: string;
+  Title?: string;
+  Pos?: number;
+  Id?: number;
+  Name?: string;
+  'Last-Modified'?: string;
+  Artist?: string;
+  Album?: string;
+  Genre?: string;
+  Time?: number;
+  duration?: number;
+};
+
+type DirectoryObject = {
+  directory: string;
+  'Last-Modified': string;
 };
 
 type NormalizedPlaylistItem = {
@@ -40,7 +62,7 @@ type NormalizedPlaylistItem = {
   duration?: number;
 };
 
-function mapPlainTextToObject(text: string): Record<string, string | number> {
+function mapPlainTextToObject(text: string): CommonObject {
   return text.split('\n')
     .reduce((object, row) => {
       const [key, value] = row.split(': ');
@@ -51,7 +73,7 @@ function mapPlainTextToObject(text: string): Record<string, string | number> {
     }, {});
 }
 
-function mapOkBufferToObject(buffer: Buffer): Record<string, string | number> {
+function mapOkBufferToObject(buffer: Buffer): CommonObject {
   // const buffer = buff.slice(0, buff.indexOf('\nOK\n'));
   const separator = '\n';
   const bufferLength = buffer.length;
@@ -137,12 +159,12 @@ class MPDService {
   }
 
   async listfiles(url?: string) {
-    const command = url ? `listfiles ${url}` : 'listfiles';
+    const command = url ? `listfiles "${url}"` : 'listfiles';
     const resultBuffer = await this.send(command);
 
     const result = resultBuffer
       .toString()
-      .replace(/\ndirectory'/g, '\n\ndirectory')
+      .replace(/\ndirectory/g, '\n\ndirectory')
       .replace(/\nfile/g, '\n\nfile')
       .split('\n\n')
       .map(mapPlainTextToObject);
@@ -150,7 +172,22 @@ class MPDService {
     return result;
   }
 
-  async playlistinfo(args?: (string | number)[]): Promise<PlaylistItem[]> {
+  async lsinfo(url?: string): Promise<FSObject[]> {
+    const command = url ? `lsinfo "${url}"` : 'lsinfo';
+    const resultBuffer = await this.send(command);
+
+    const result = resultBuffer
+      .toString()
+      .replace(/\ndirectory/g, '\n\ndirectory')
+      .replace(/\nplaylist/g, '\n\nplaylist')
+      .replace(/\nfile/g, '\n\nfile')
+      .split('\n\n')
+      .map(mapPlainTextToObject);
+
+    return result as FSObject[];
+  }
+
+  async playlistinfo(args?: (string | number)[]): Promise<FileObject[]> {
     const songpos = args && args[0];
     const command = songpos ? `playlistinfo ${songpos}` : 'playlistinfo';
     const resultBuffer = await this.send(command);
@@ -161,7 +198,7 @@ class MPDService {
       .split('\n\n')
       .map(mapPlainTextToObject);
 
-    return result as PlaylistItem[];
+    return result as FileObject[];
   }
 
   async listplaylists() {

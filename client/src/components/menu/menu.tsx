@@ -18,7 +18,11 @@ const Menu: React.FC<MenuProps> = ({ activeTabName, onTabClick }) => (
     >
       <span className="icon material-icons">queue_music</span>
     </button>
-    <button type="button">
+    <button
+      type="button"
+      className={classNames({ active: activeTabName === 'file-explorer' })}
+      onClick={() => onTabClick('file-explorer')}
+    >
       <span className="icon material-icons">folder_open</span>
     </button>
   </div>

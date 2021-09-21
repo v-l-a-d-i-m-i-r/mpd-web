@@ -1,9 +1,14 @@
 import ActionDependencies from '../types/action-dependencies';
 
+import { omitLeadSlash, addLeadSlash } from '../utils/string';
+
 type ActionParams = {
   args?: (string | number)[];
 };
 
+const mapObjectKeysToLowerCase = (object: Record<string, string | number>): Record<string, string | number> => Object
+  .entries(object)
+  .reduce((acc, [key, value]) => ({ ...acc, [key.replace('-', '').toLowerCase()]: value }), {});
 class MPDAction {
   mpdService: ActionDependencies['mpdService'];
 
@@ -31,12 +36,23 @@ class MPDAction {
     };
   }
 
-  getFiles() {
-    return this.mpdService.listfiles();
-  }
+  async getFilesList({ args }: ActionParams) {
+    const basePath = args && omitLeadSlash(args[0] as string);
 
-  getPlaylists() {
-    return this.mpdService.listplaylists();
+    const fsObjects = await this.mpdService.lsinfo(basePath);
+
+    const directories = fsObjects.filter((fsObject) => fsObject.directory).sort();
+    const files = fsObjects.filter((fsObject) => fsObject.file).sort();
+
+    return [...directories, ...files]
+      .map((fsObject) => {
+        const type = fsObject.file ? 'file' : 'directory';
+
+        return {
+          type,
+          ...mapObjectKeysToLowerCase(fsObject),
+        };
+      });
   }
 
   async getPlaylistInfo({ args }: ActionParams): Promise<Record<string, string | number>[]> {
@@ -45,13 +61,12 @@ class MPDAction {
     return playlistInfo.map((playlistItem) => {
       // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
       const type = playlistItem.file.match(/^http/) ? 'stream' : 'file';
-      const path = type === 'file' ? `/${playlistItem.file}` : playlistItem.file;
+      const path = type === 'file' ? addLeadSlash(playlistItem.file) : playlistItem.file;
 
       return {
         type,
         path,
-        ...Object.entries(playlistItem)
-          .reduce((acc, [key, value]) => ({ ...acc, [key.replace('-', '').toLowerCase()]: value }), {}),
+        ...mapObjectKeysToLowerCase(playlistItem),
       };
     });
   }

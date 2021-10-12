@@ -3,20 +3,25 @@ import React, { useState, useEffect } from 'react';
 import RPCService from '../../services/rpc.service';
 import { classNames, fancyTimeFormat } from '../../utils';
 
+import './file-explorer.scss';
+
 const rpcService = new RPCService();
 
 const errorHandler = (error: Error) => console.error(error);
+// const getFilesList = (path: string) => rpcService.call('MPD.getFilesList', [path]).catch(errorHandler);
+const getRelativePath = (fullPath: string): string => fullPath.split('/').slice(-1)[0];
+const getPreviousPath = (fullPath: string): string => fullPath.split('/').slice(0, -1).join('/');
 
 type FileExplorerProps = {
 };
 
 const FileExplorer: React.FC<FileExplorerProps> = () => {
-  const [state, setState] = useState({ path: '/', items: [] });
+  const [state, setState] = useState({ path: '', items: [] });
 
   useEffect(() => {
     let isMounted = true;
 
-    rpcService.call('MPD.getFilesList', [state.path])
+    rpcService.call('MPD.getFilesList', ['/'])
       .then((items) => {
         if (isMounted) {
           setState((currentState) => ({ ...currentState, items }));
@@ -27,7 +32,17 @@ const FileExplorer: React.FC<FileExplorerProps> = () => {
     return () => {
       isMounted = false;
     };
-  }, [state.path]);
+  }, []);
+
+  const onFolderClick = (path: string) => {
+    console.log('path', path);
+
+    rpcService.call('MPD.getFilesList', [path])
+      .then((items) => {
+        setState((currentState) => ({ ...currentState, path, items }));
+      })
+      .catch(errorHandler);
+  };
 
   return (
     <div className="file-explorer">
@@ -39,17 +54,18 @@ const FileExplorer: React.FC<FileExplorerProps> = () => {
           </tr>
         </thead>
         <tbody>
-          <tr>
+          <tr onClick={() => onFolderClick(getPreviousPath(state.path))}>
             <td>. .</td>
           </tr>
           { state.items.map((item) => {
             const isFile = item.type === 'file';
-            const title = isFile ? item.file : item.directory;
+            const path = isFile ? item.file : item.directory;
+            const title = getRelativePath(path);
             const time = isFile ? fancyTimeFormat(item.duration) : '';
             const icon = isFile ? 'insert_drive_file' : 'folder';
 
             return (
-              <tr>
+              <tr key={path} onClick={() => !isFile && onFolderClick(`${state.path}/${title}`)}>
                 <td>
                   <span className="icon material-icons-outlined">{icon}</span>
                   { title }

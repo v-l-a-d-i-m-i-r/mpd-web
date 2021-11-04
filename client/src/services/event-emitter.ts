@@ -1,33 +1,33 @@
-type EventHandler = (event?: any) => void;
+// type EventHandler = (event?: any) => void;
 
-class EventEmitter<T extends string> {
-  private handlersMap: Partial<Record<T, EventHandler[]>>;
+// class EventEmitter<T extends string> {
+//   private handlersMap: Partial<Record<T, EventHandler[]>>;
 
-  constructor() {
-    this.handlersMap = {};
-  }
+//   constructor() {
+//     this.handlersMap = {};
+//   }
 
-  emit(eventName: T, eventData?: any): void {
-    const handlers = this.handlersMap[eventName];
+//   emit(eventName: T, eventData?: any): void {
+//     const handlers = this.handlersMap[eventName];
 
-    handlers?.forEach((handler: EventHandler) => handler(eventData));
-  }
+//     handlers?.forEach((handler: EventHandler) => handler(eventData));
+//   }
 
-  on(eventName: T, eventHandler: EventHandler): void {
-    const handlers = this.handlersMap[eventName];
+//   on(eventName: T, eventHandler: EventHandler): void {
+//     const handlers = this.handlersMap[eventName];
 
-    if (handlers) {
-      handlers.push(eventHandler);
+//     if (handlers) {
+//       handlers.push(eventHandler);
 
-      return;
-    }
+//       return;
+//     }
 
-    this.handlersMap[eventName] = [eventHandler];
-  }
-}
+//     this.handlersMap[eventName] = [eventHandler];
+//   }
+// }
 
-type EventName = 'PLAY' | 'PAUSE';
+// type EventName = 'PLAY' | 'PAUSE';
 
-const eventEmitter = new EventEmitter<EventName>();
+// const eventEmitter = new EventEmitter<EventName>();
 
-export default eventEmitter;
+// export default eventEmitter;

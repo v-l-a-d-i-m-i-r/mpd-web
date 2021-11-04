@@ -1,0 +1,22 @@
+{
+  "name": "mpd-web",
+  "version": "1.0.0",
+  "description": "https://github.com/developit/nextjs-preact-demo",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "npm --prefix ./client/ ci && npm --prefix ./server/ ci",
+    "build": "rm -rf ./build && npm --prefix ./client/ run build && npm --prefix ./server/ run build && cp -r ./server/build ./build/ && cp -r ./client/build ./build/public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/v-l-a-d-i-m-i-r/mpd-web.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/v-l-a-d-i-m-i-r/mpd-web/issues"
+  },
+  "homepage": "https://github.com/v-l-a-d-i-m-i-r/mpd-web#readme"
+}

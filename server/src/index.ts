@@ -16,7 +16,7 @@ const routes = [
     then: (req: IncomingMessage, res: ServerResponse, { logger }: { logger: ILogger }) => new JsonRpcHttpController({ logger }).execute(req, res),
   },
   {
-    when: (req: IncomingMessage) => true,
+    when: (req: IncomingMessage) => (req.method === 'GET'),
     then: (req: IncomingMessage, res: ServerResponse, { logger }: { logger: ILogger }) => new StaticController({ logger }).execute(req, res),
   },
 ];

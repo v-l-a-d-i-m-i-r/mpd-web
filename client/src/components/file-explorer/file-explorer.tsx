@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import RPCService from '../../services/rpc.service';
-import { classNames, fancyTimeFormat } from '../../utils';
+import { fancyTimeFormat } from '../../utils';
 
 import './file-explorer.scss';
 
@@ -15,6 +15,13 @@ const getPreviousPath = (fullPath: string): string => fullPath.split('/').slice(
 type FileExplorerProps = {
 };
 
+type FSObject = {
+  type: string,
+  file: string,
+  directory: string,
+  duration: number,
+};
+
 const FileExplorer: React.FC<FileExplorerProps> = () => {
   const [state, setState] = useState({ path: '', items: [] });
 
@@ -22,7 +29,7 @@ const FileExplorer: React.FC<FileExplorerProps> = () => {
     let isMounted = true;
 
     rpcService.call('MPD.getFilesList', ['/'])
-      .then((items) => {
+      .then((items: FSObject[]) => {
         if (isMounted) {
           setState((currentState) => ({ ...currentState, items }));
         }
@@ -35,10 +42,10 @@ const FileExplorer: React.FC<FileExplorerProps> = () => {
   }, []);
 
   const onFolderClick = (path: string) => {
-    console.log('path', path);
+    // console.log('path', path);
 
     rpcService.call('MPD.getFilesList', [path])
-      .then((items) => {
+      .then((items: FSObject[]) => {
         setState((currentState) => ({ ...currentState, path, items }));
       })
       .catch(errorHandler);
@@ -57,7 +64,7 @@ const FileExplorer: React.FC<FileExplorerProps> = () => {
           <tr onClick={() => onFolderClick(getPreviousPath(state.path))}>
             <td>. .</td>
           </tr>
-          { state.items.map((item) => {
+          { state.items.map((item: FSObject) => {
             const isFile = item.type === 'file';
             const path = isFile ? item.file : item.directory;
             const title = getRelativePath(path);

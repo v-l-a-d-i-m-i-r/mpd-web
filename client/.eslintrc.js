@@ -24,5 +24,6 @@ module.exports = {
        }
     ],
     'import/prefer-default-export': 0,
+    'no-unused-vars': ["error", { "args": "after-used" }],
   },
 }

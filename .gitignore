@@ -4,6 +4,7 @@
 node_modules
 build
 .env
+public
 
 # debug
 npm-debug.log*

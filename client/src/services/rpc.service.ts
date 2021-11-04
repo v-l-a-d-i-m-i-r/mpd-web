@@ -30,10 +30,10 @@ class RPCService {
       body: JSON.stringify(requestPayload), // body data type must match "Content-Type" header
     });
 
-    const parsedResponse = await response.json();
+    const parsedResponse = (await response.json()) as { result: RPCCallResponse, error: Error };
     // console.log(parsedResponse);
 
-    if (parsedResponse.result) return parsedResponse.result as RPCCallResponse;
+    if (parsedResponse.result) return parsedResponse.result;
 
     throw parsedResponse.error;
   }

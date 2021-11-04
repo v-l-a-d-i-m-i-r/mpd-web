@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
 import RPCService from '../../services/rpc.service';
-import { classNames } from '../../utils';
 
 import Playback from '../playback/playback';
 import Playlist from '../playlist/playlist';
@@ -34,6 +33,27 @@ const initialState = {
   },
 };
 
+type ExtendedStatus = {
+  repeat: number,
+  random: number,
+  single: number,
+  consume: number,
+  playlist: number,
+  playlistlength: number,
+  mixrampdb: number,
+  state: string,
+  song: number,
+  songid: number,
+  time: string,
+  elapsed: number,
+  bitrate: number,
+  audio: string,
+  nextsong: number,
+  nextsongid: number,
+  duration: number,
+  songtitle: string,
+};
+
 const rpcService = new RPCService();
 
 const errorHandler = (error: Error) => console.error(error);
@@ -46,7 +66,7 @@ const App: React.FC = () => {
 
     const getMPDStatus = (): Promise<void> => rpcService
       .call('MPD.getExtendedStatus')
-      .then((playback) => {
+      .then((playback: ExtendedStatus) => {
         if (isMounted) {
           setState((currentState) => ({ ...currentState, playback }));
         }

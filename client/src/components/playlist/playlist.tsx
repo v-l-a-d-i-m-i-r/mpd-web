@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   DragDropContext, Droppable, Draggable,
-  DropResult, DroppableStateSnapshot, DraggableStateSnapshot, DraggableProvided, DroppableProvided,
+  DropResult, DraggableStateSnapshot, DraggableProvided, DroppableProvided,
 } from 'react-beautiful-dnd';
 
 import './playlist.scss';
@@ -46,16 +46,16 @@ const Playlist: React.FC<PlaylistProps> = ({ songid }) => {
     };
   }, [songid]);
 
-  const reorder = ({ items, startIndex, endIndex }) => {
-    console.log('Start index ', startIndex);
-    console.log('End index ', endIndex);
+  // const reorder = ({ items, startIndex, endIndex }) => {
+  //   console.log('Start index ', startIndex);
+  //   console.log('End index ', endIndex);
 
-    const result = Array.from(items);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
+  //   const result = Array.from(items);
+  //   const [removed] = result.splice(startIndex, 1);
+  //   result.splice(endIndex, 0, removed);
 
-    return result;
-  };
+  //   return result;
+  // };
 
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) {
@@ -67,7 +67,7 @@ const Playlist: React.FC<PlaylistProps> = ({ songid }) => {
       .catch(errorHandler);
   };
 
-  const getListStyle = (snapshot: DroppableStateSnapshot) => ({
+  const getListStyle = (/* snapshot: DroppableStateSnapshot */) => ({
     // background: snapshot.isDraggingOver ? 'lightblue' : 'lightgrey',
     // padding: grid,
     // width: '100%',
@@ -79,10 +79,10 @@ const Playlist: React.FC<PlaylistProps> = ({ songid }) => {
     rpcService.call('MPD.play', [item.pos]).catch(errorHandler);
   };
 
-  const getDroppableProps = (provided: DroppableProvided, snapshot: DroppableStateSnapshot) => ({
+  const getDroppableProps = (provided: DroppableProvided /* , snapshot: DroppableStateSnapshot */) => ({
     ...provided.droppableProps,
     ref: provided.innerRef,
-    style: getListStyle(snapshot),
+    style: getListStyle(/* snapshot */),
   });
 
   const getDraggableProps = (provided: DraggableProvided, snapshot: DraggableStateSnapshot) => ({
@@ -104,9 +104,9 @@ const Playlist: React.FC<PlaylistProps> = ({ songid }) => {
         </thead>
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId="droppable">
-            {(droppableProvided, droppableStateSnapshot) => (
+            {(droppableProvided /* , droppableStateSnapshot */) => (
               // eslint-disable-next-line react/jsx-props-no-spreading
-              <tbody {...getDroppableProps(droppableProvided, droppableStateSnapshot)}>
+              <tbody {...getDroppableProps(droppableProvided /* , droppableStateSnapshot */)}>
                 {state.map((item, index) => (
                   <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
                     {(draggableProvided, draggableStateSnapshot) => {

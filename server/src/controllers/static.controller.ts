@@ -2,6 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import { IncomingMessage, ServerResponse } from 'http';
 import ILogger from '../types/logger';
+import { PUBLIC_PATH } from '../config';
 
 class StaticController {
   logger: ILogger;
@@ -17,9 +18,10 @@ class StaticController {
     // https://habr.com/ru/post/481898/
 
     const { url } = request;
-    const publicFolderAbsolutePath = path.join(__dirname, '..', 'public');
     const relativeFilePath = url === '/' ? 'index.html' : url as string;
-    const absoluteFilePath = path.join(publicFolderAbsolutePath, relativeFilePath);
+    const absoluteFilePath = path.join(PUBLIC_PATH, relativeFilePath);
+
+    console.log(PUBLIC_PATH);
 
     const extname = String(path.extname(absoluteFilePath)).toLowerCase();
     const mimeTypes: Record<string, string> = {

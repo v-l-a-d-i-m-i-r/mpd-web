@@ -63,9 +63,14 @@ type NormalizedPlaylistItem = {
 };
 
 function mapPlainTextToObject(text: string): CommonObject {
+  const separator = ': ';
+  const separatorLength = separator.length;
+
   return text.split('\n')
     .reduce((object, row) => {
-      const [key, value] = row.split(': ');
+      const separatorIndex = row.indexOf(separator);
+      const key = row.slice(0, separatorIndex);
+      const value = row.slice(separatorIndex + separatorLength);
       const numberValue = Number(value);
       const parsedValue = Number.isNaN(numberValue) ? value : numberValue;
 
@@ -198,6 +203,10 @@ class MPDService {
       .split('\n\n')
       .map(mapPlainTextToObject);
 
+    if (result.find((item) => !item.id)) {
+      // may return not all the list
+    }
+
     return result as FileObject[];
   }
 
@@ -241,6 +250,10 @@ class MPDService {
     await this.send(`move ${from} ${to}`);
 
     return {};
+  }
+
+  async add(uri: string) {
+    await this.send(`add "${uri}"`);
   }
 }
 

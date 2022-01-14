@@ -4,6 +4,24 @@ import { IncomingMessage, ServerResponse } from 'http';
 import ILogger from '../types/logger';
 import { PUBLIC_PATH } from '../config';
 
+const mimeTypes: Record<string, string> = {
+  '.html': 'text/html',
+  '.js': 'text/javascript',
+  '.css': 'text/css',
+  '.json': 'application/json',
+  '.png': 'image/png',
+  '.jpg': 'image/jpg',
+  '.gif': 'image/gif',
+  '.svg': 'image/svg+xml',
+  '.wav': 'audio/wav',
+  '.mp4': 'video/mp4',
+  '.woff': 'application/font-woff',
+  '.ttf': 'application/font-ttf',
+  '.eot': 'application/vnd.ms-fontobject',
+  '.otf': 'application/font-otf',
+  '.wasm': 'application/wasm',
+};
+
 class StaticController {
   logger: ILogger;
 
@@ -24,24 +42,6 @@ class StaticController {
     console.log(PUBLIC_PATH);
 
     const extname = String(path.extname(absoluteFilePath)).toLowerCase();
-    const mimeTypes: Record<string, string> = {
-      '.html': 'text/html',
-      '.js': 'text/javascript',
-      '.css': 'text/css',
-      '.json': 'application/json',
-      '.png': 'image/png',
-      '.jpg': 'image/jpg',
-      '.gif': 'image/gif',
-      '.svg': 'image/svg+xml',
-      '.wav': 'audio/wav',
-      '.mp4': 'video/mp4',
-      '.woff': 'application/font-woff',
-      '.ttf': 'application/font-ttf',
-      '.eot': 'application/vnd.ms-fontobject',
-      '.otf': 'application/font-otf',
-      '.wasm': 'application/wasm',
-    };
-
     const contentType = mimeTypes[extname] || 'application/octet-stream';
 
     response.on('pipe', () => {
@@ -50,9 +50,13 @@ class StaticController {
 
     fs.createReadStream(absoluteFilePath)
       .on('error', (error: Error & { code: string }) => {
-        error.code === 'ENOENT'
-          ? response.writeHead(404).end()
-          : response.writeHead(500).end()
+        if (error.code === 'ENOENT') {
+          response.writeHead(404).end();
+
+          return;
+        }
+
+        response.writeHead(500).end();
       })
       .pipe(response, { end: true });
   }

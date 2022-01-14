@@ -58,7 +58,7 @@ class MPDClient {
       function onDataHandler(chunk: Buffer) {
         buffer = Buffer.concat([buffer, chunk]);
 
-        if (buffer.indexOf('OK') !== -1) {
+        if (buffer.indexOf('OK\n') !== -1) {
           socket?.off('data', onDataHandler);
           socket?.off('error', onErrorHandler);
 

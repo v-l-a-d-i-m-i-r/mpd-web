@@ -8,6 +8,12 @@ import './playback.scss';
 const rpcService = new RPCService();
 
 const errorHandler = (error: Error) => console.error(error);
+const play = () => { rpcService.call('MPD.play').catch(errorHandler); };
+const pause = () => { rpcService.call('MPD.pause').catch(errorHandler); };
+const stop = () => { rpcService.call('MPD.stop').catch(errorHandler); };
+const previous = () => { rpcService.call('MPD.previous').catch(errorHandler); };
+const next = () => { rpcService.call('MPD.next').catch(errorHandler); };
+const seekCurrent = (value: string) => { rpcService.call('MPD.seekcur', [value]).catch(errorHandler); };
 
 type PlaybackProps = {
   state: string;
@@ -19,20 +25,27 @@ type PlaybackProps = {
   songtitle: string;
 };
 
-const Playback: React.FC<PlaybackProps> = ({ state, repeat, song, playlistlength, elapsed, duration, songtitle }) => {
-  const isStream = !duration;
+const Playback: React.FC<PlaybackProps> = ({ state, repeat, song, playlistlength, elapsed, duration = 0, songtitle }) => {
   const isStopped = state === 'stop';
   const isPlaying = state === 'play';
   const isPaused = state === 'pause';
   const isPrevButtonDisabled = repeat ? false : song === 0;
   const isNextButtonDisabled = repeat ? false : song === playlistlength - 1;
 
-  const onPlayButtonClick = () => rpcService.call(isPlaying ? 'MPD.pause' : 'MPD.play').catch(errorHandler);
-  const onPrevButtonClick = () => rpcService.call('MPD.previous').catch(errorHandler);
-  const onNextButtonClick = () => rpcService.call('MPD.next').catch(errorHandler);
+  const onPlayButtonClick = () => {
+    if (isPlaying && duration) {
+      pause();
 
-  const onSeekCurrent = (value: string) => {
-    rpcService.call('MPD.seekCurrent', [value]).catch(errorHandler);
+      return;
+    }
+
+    if (isPlaying && !duration) {
+      stop();
+
+      return;
+    }
+
+    play();
   };
 
   return (
@@ -44,14 +57,14 @@ const Playback: React.FC<PlaybackProps> = ({ state, repeat, song, playlistlength
       </div>
 
       <input
-        disabled={isStream}
+        disabled={!duration}
         style={{ display: 'block', width: '100%' }}
         type="range"
         min={0}
-        max={isStream ? 0 : duration}
+        max={duration}
         defaultValue={elapsed}
-        onTouchEnd={(event: React.TouchEvent<HTMLButtonElement>) => onSeekCurrent((event.target as HTMLButtonElement).value)}
-        onMouseUp={(event: React.MouseEvent<HTMLButtonElement>) => onSeekCurrent((event.target as HTMLButtonElement).value)}
+        onTouchEnd={(event: React.TouchEvent<HTMLButtonElement>) => seekCurrent((event.target as HTMLButtonElement).value)}
+        onMouseUp={(event: React.MouseEvent<HTMLButtonElement>) => seekCurrent((event.target as HTMLButtonElement).value)}
       />
 
       <div className="button-bar">
@@ -66,7 +79,7 @@ const Playback: React.FC<PlaybackProps> = ({ state, repeat, song, playlistlength
           disabled={isPrevButtonDisabled}
           type="button"
           className="prev-button"
-          onClick={() => onPrevButtonClick()}
+          onClick={previous}
         >
           <span className="icon material-icons">skip_previous</span>
         </button>
@@ -74,7 +87,7 @@ const Playback: React.FC<PlaybackProps> = ({ state, repeat, song, playlistlength
         <button
           type="button"
           className="play-button"
-          onClick={() => onPlayButtonClick()}
+          onClick={onPlayButtonClick}
         >
           <span className="icon material-icons">{isPaused || isStopped ? 'play_arrow' : 'pause'}</span>
         </button>
@@ -83,7 +96,7 @@ const Playback: React.FC<PlaybackProps> = ({ state, repeat, song, playlistlength
           disabled={isNextButtonDisabled}
           type="button"
           className="next-button"
-          onClick={() => onNextButtonClick()}
+          onClick={next}
         >
           <span className="icon material-icons">skip_next</span>
         </button>

@@ -62,7 +62,7 @@ const Playlist: React.FC<PlaylistProps> = ({ songid }) => {
       return;
     }
 
-    rpcService.call('MPD.reorder', [result.source.index, result.destination.index])
+    rpcService.call('MPD.move', [result.source.index, result.destination.index])
       .then((playlistItems) => setState(playlistItems as PlaylistItem[]))
       .catch(errorHandler);
   };

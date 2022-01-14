@@ -1,6 +1,6 @@
 import ActionDependencies from '../types/action-dependencies';
 
-import { omitLeadSlash, addLeadSlash } from '../utils/string';
+import { addLeadSlash } from '../utils/string';
 
 type ActionParams = {
   args?: (string | number)[];
@@ -37,7 +37,7 @@ class MPDAction {
   }
 
   async getFilesList({ args }: ActionParams) {
-    const basePath = args && omitLeadSlash(args[0] as string);
+    const basePath = args && args[0] as string;
 
     const fsObjects = await this.mpdService.lsinfo(basePath);
 
@@ -46,11 +46,14 @@ class MPDAction {
 
     return [...directories, ...files]
       .map((fsObject) => {
-        const type = fsObject.file ? 'file' : 'directory';
+        const { file, directory, ...rest } = mapObjectKeysToLowerCase(fsObject);
+        const type = file ? 'file' : 'directory';
+        const path = file || directory;
 
         return {
           type,
-          ...mapObjectKeysToLowerCase(fsObject),
+          path,
+          ...rest,
         };
       });
   }
@@ -93,18 +96,24 @@ class MPDAction {
     return this.mpdService.next();
   }
 
-  seekCurrent({ args }: ActionParams) {
+  seekcur({ args }: ActionParams) {
     const time = args ? args[0] : 0;
 
     return this.mpdService.seekcur(time);
   }
 
-  async reorder({ args }: ActionParams) {
+  async move({ args }: ActionParams) {
     const [from, to] = args || [];
 
     await this.mpdService.move(from, to);
 
     return this.getPlaylistInfo({});
+  }
+
+  async add({ args }: ActionParams) {
+    if (!(args && args.length && typeof args[0] === 'string')) throw new Error('Validation error');
+
+    await this.mpdService.add(args[0]);
   }
 }
 

@@ -8,20 +8,16 @@ import Matcher from '../utils/matcher';
 
 const routes = [
   {
-    when: (method: string) => (method === 'MPD.getExtendedStatus'),
-    then: (deps: ActionDependencies) => new MPDAction(deps).getExtendedStatus(),
-  },
-  {
-    when: (method: string) => (method === 'MPD.getPlaylistInfo'),
-    then: (deps: ActionDependencies, params: JSONRPCRequest['params']) => new MPDAction(deps).getPlaylistInfo(params),
-  },
-  {
     when: (method: string) => (method === 'MPD.play'),
     then: (deps: ActionDependencies, params: JSONRPCRequest['params']) => new MPDAction(deps).play(params),
   },
   {
     when: (method: string) => (method === 'MPD.pause'),
     then: (deps: ActionDependencies) => new MPDAction(deps).pause(),
+  },
+  {
+    when: (method: string) => (method === 'MPD.stop'),
+    then: (deps: ActionDependencies) => new MPDAction(deps).stop(),
   },
   {
     when: (method: string) => (method === 'MPD.previous'),
@@ -32,16 +28,28 @@ const routes = [
     then: (deps: ActionDependencies) => new MPDAction(deps).next(),
   },
   {
-    when: (method: string) => (method === 'MPD.seekCurrent'),
-    then: (deps: ActionDependencies, params: JSONRPCRequest['params']) => new MPDAction(deps).seekCurrent(params),
+    when: (method: string) => (method === 'MPD.seekcur'),
+    then: (deps: ActionDependencies, params: JSONRPCRequest['params']) => new MPDAction(deps).seekcur(params),
   },
   {
-    when: (method: string) => (method === 'MPD.reorder'),
-    then: (deps: ActionDependencies, params: JSONRPCRequest['params']) => new MPDAction(deps).reorder(params),
+    when: (method: string) => (method === 'MPD.move'),
+    then: (deps: ActionDependencies, params: JSONRPCRequest['params']) => new MPDAction(deps).move(params),
+  },
+  {
+    when: (method: string) => (method === 'MPD.add'),
+    then: (deps: ActionDependencies, params: JSONRPCRequest['params']) => new MPDAction(deps).add(params),
   },
   {
     when: (method: string) => (method === 'MPD.getFilesList'),
     then: (deps: ActionDependencies, params: JSONRPCRequest['params']) => new MPDAction(deps).getFilesList(params),
+  },
+  {
+    when: (method: string) => (method === 'MPD.getExtendedStatus'),
+    then: (deps: ActionDependencies) => new MPDAction(deps).getExtendedStatus(),
+  },
+  {
+    when: (method: string) => (method === 'MPD.getPlaylistInfo'),
+    then: (deps: ActionDependencies, params: JSONRPCRequest['params']) => new MPDAction(deps).getPlaylistInfo(params),
   },
 ];
 
@@ -85,7 +93,7 @@ class JSONRPCHTTPController {
           }
 
           throw new Error('Method not found');
-        } catch (error) {
+        } catch (error: Error | unknown) {
           response.writeHead(200, { 'Content-Type': 'application/json' });
           response.end(JSON.stringify({
             id: 1,

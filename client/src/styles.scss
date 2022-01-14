@@ -1,8 +1,17 @@
 // $main-color: #2c2c2c;
 // $secondary-color: #f4f4f4;
 
+// $main-color: #f4f4f4;
+// $secondary-color: #2c2c2c;
+
 $main-color: #f4f4f4;
-$secondary-color: #2c2c2c;
+$secondary-color: #444655;
+
+// https://mycolor.space/?hex=%230075FF&sub=1
+// $main-color: #444655;
+// $secondary-color: #A9AABC;
+// $main-color: #A9AABC;
+// $secondary-color: #444655;
 
 
 $active-color: #0075ff;
@@ -17,7 +26,7 @@ $border-width: 1px;
   box-sizing: border-box;
   font-family: sans-serif;
   color: $main-color;
-  font-size: 16px;
+  font-size: 14px;
   &:active,
   &.active {
     color: $active-color;
@@ -58,8 +67,8 @@ button {
 button,
 tbody tr {
   &:hover {
-    color: $active-color;
-    border-color: $active-color;
+    // color: $active-color;
+    // border-color: $active-color;
   }
 }
 
@@ -127,7 +136,7 @@ table {
 
     .icon {
       font-size: 16px;
-      padding-right: 5px;
+      padding-right: 3px;
       vertical-align: text-bottom;
       color: inherit;
     }

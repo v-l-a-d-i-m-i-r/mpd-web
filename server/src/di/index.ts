@@ -1,45 +1,38 @@
-import Dependencies from '../types/dependencies';
+type Factory<I> = (dependencies: I) => I[keyof I];
+type Service<I> = I[keyof I];
 
-const capitalize = (string: string): string => string[0].toUpperCase() + string.substring(1);
+export default class DI<I> {
+  private factories: Map<string, Factory<I>>;
 
-class Container {
-  services: Map<string, Service>;
+  private services: Map<string, Service<I>>;
+
+  private dependencies: I;
 
   constructor() {
+    this.factories = new Map();
     this.services = new Map();
-  }
+    this.dependencies = new Proxy({}, {
+      get: (_, prop: string & keyof I) => {
+        if (!this.services.has(prop)) {
+          const factory = this.factories.get(prop);
 
-  registerService(name: string, service: Service): void {
-    this.services.set(name, service);
-  }
+          if (!factory) {
+            throw new Error(`${prop} factory not registered`);
+          }
 
-  getService(name: string): Service {
-    const service = this.services.get(name);
+          this.services.set(prop, factory(this.dependencies));
+        }
 
-    if (!service) {
-      throw new Error(`Service ${name} not found.`);
-    }
-
-    return service;
-  }
-}
-
-type Service = new (dependencies: Dependencies) => any;
-
-class Injector {
-  container: Container;
-
-  constructor(container: Container) {
-    this.container = container;
-  }
-
-  inject(): Dependencies {
-    return new Proxy({}, {
-      get: (target, prop, receiver) => {
-        const Service = this.container.getService(capitalize(prop as string));
-
-        return new Service(this.inject());
+        return this.services.get(prop);
       },
-    }) as Dependencies;
+    }) as I;
+  }
+
+  addDependency(name: string, facory: Factory<I>): void {
+    this.factories.set(name, facory);
+  }
+
+  getDependencies(): I {
+    return this.dependencies;
   }
 }

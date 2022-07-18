@@ -2,7 +2,7 @@ import { MPD_HOST, MPD_PORT } from '../config';
 
 import MPDClient from '../clients/mpd.client';
 import ACKError from '../errors/ack.error';
-import ILogger from '../types/logger';
+import { ILogger } from '../types/logger';
 
 type CommonObject = Record<string, string | number>;
 

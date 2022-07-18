@@ -1,5 +1,5 @@
 import MPDService from '../services/mpd.service';
-import ILogger from './logger';
+import { ILogger } from './logger';
 
 type ActionDependencies = {
   mpdService: MPDService;

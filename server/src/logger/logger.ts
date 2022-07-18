@@ -1,14 +1,13 @@
-import ILogger from '../types/logger';
+import { ILogger, LoggerContext, LogData } from '../types/logger';
 
-/* eslint-disable class-methods-use-this */
 class Logger implements ILogger {
-  context: Record<string | number, any>;
+  context: LoggerContext;
 
-  constructor({ context }: { context?: Record<string | number, any> }) {
-    this.context = context || {};
+  constructor({ context }: { context: LoggerContext }) {
+    this.context = context;
   }
 
-  log(message: string, data?: Record<string | number, any>): void {
+  log(message: string, data?: LogData): void {
     console.log(JSON.stringify({
       level: 'log',
       timestamp: Date.now(),
@@ -18,7 +17,7 @@ class Logger implements ILogger {
     }), '\n');
   }
 
-  error(message: string, data?: Record<string | number, any>): void {
+  error(message: string, data?: LogData): void {
     console.error(JSON.stringify({
       level: 'error',
       timestamp: Date.now(),
@@ -28,9 +27,9 @@ class Logger implements ILogger {
     }));
   }
 
-  child({ context }: { context?: Record<string | number, any> }): Logger {
+  child({ context }: { context: LoggerContext }): Logger {
     return new Logger({
-      context: { ...this.context, ...(context || {}) },
+      context: { ...this.context, ...context },
     });
   }
 }

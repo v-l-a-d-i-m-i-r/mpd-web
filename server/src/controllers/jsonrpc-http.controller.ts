@@ -2,7 +2,7 @@ import { IncomingMessage, ServerResponse } from 'http';
 import MPDService from '../services/mpd.service';
 import { JSONRPCRequest } from '../types/jsonrpc';
 import ActionDependencies from '../types/action-dependencies';
-import ILogger from '../types/logger';
+import { ILogger } from '../types/logger';
 import MPDAction from '../actions/mpd.action';
 import Matcher from '../utils/matcher';
 
@@ -54,7 +54,7 @@ const routes = [
 ];
 
 const router = new Matcher(routes);
-const validateRequest = (requestData: any): JSONRPCRequest => requestData as JSONRPCRequest;
+const validateRequest = (requestData: unknown): JSONRPCRequest => requestData as JSONRPCRequest;
 
 class JSONRPCHTTPController {
   logger: ILogger;
@@ -72,7 +72,7 @@ class JSONRPCHTTPController {
         request.on('end', () => resolve(JSON.parse(Buffer.concat(chunks).toString()) as unknown as JSONRPCRequest));
         request.on('error', reject);
       }))
-      .then((body: any) => validateRequest(body))
+      .then((body: unknown) => validateRequest(body))
       .then(async ({ jsonrpc, method, params, id }): Promise<void> => {
         const logger = this.logger.child({ context: { id, method } });
         logger.log('JSONRPCHTTPController.execute request', { params });
@@ -104,8 +104,8 @@ class JSONRPCHTTPController {
           logger.error('JSONRPCHTTPController.execute response', { error });
         }
       })
-      .catch((error) => {
-        this.logger.error(error);
+      .catch((error: Error | unknown) => {
+        this.logger.error('JSONRPCHTTPController.execute error', { error });
 
         response.writeHead(400, { 'Content-Type': 'application/json' });
         response.end(JSON.stringify(error));

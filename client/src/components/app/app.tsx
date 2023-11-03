@@ -65,7 +65,8 @@ const App: React.FC = () => {
     let isMounted = true;
 
     const getMPDStatus = (): Promise<void> => rpcService
-      .call('MPD.getExtendedStatus')
+      // .call('MPD.getExtendedStatus')
+      .getExtendedStatus()
       .then((playback: ExtendedStatus) => {
         if (isMounted) {
           setState((currentState) => ({ ...currentState, playback }));

@@ -66,7 +66,7 @@ const webpackConfig = (): Configuration => ({
     open: true,
     historyApiFallback: true,
     proxy: {
-      '/api/jsonrpc': 'http://server',
+      '/api': 'http://server',
     },
   },
   plugins: [

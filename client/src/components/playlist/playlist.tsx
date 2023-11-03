@@ -33,7 +33,8 @@ const Playlist: React.FC<PlaylistProps> = ({ songid }) => {
   useEffect(() => {
     let isMounted = true;
 
-    rpcService.call('MPD.getPlaylistInfo')
+    // rpcService.call('MPD.getPlaylistInfo')
+    rpcService.getPlaylistInfo()
       .then((playlistItems) => {
         if (isMounted) {
           setState(playlistItems as PlaylistItem[]);

@@ -14,8 +14,8 @@ services:
   server:
     environment:
       HTTP_PORT: 80
-      MPD_HOST: ${MPD_HOST}
-      MPD_PORT: ${MPD_PORT}
+      MPD_HOST: mpd
+      MPD_PORT: 6600
     build:
       context: ./server
       dockerfile: Dockerfile.dev
@@ -25,3 +25,16 @@ services:
     volumes:
       - ./server/src/:/server/src/
     command: npm run dev
+
+  mpd:
+    build:
+      context: ./mpd
+    volumes:
+      - .mpd/cache:/mpd/cache
+      - .mpd/playlists:/mpd/playlists
+      - .mpd/music:/mpd/music
+    devices:
+      - /dev/snd:/dev/snd
+    # ports:
+    #   - ${DC_MPD_PORT}:6600
+    restart: unless-stopped

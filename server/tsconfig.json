@@ -19,7 +19,9 @@
     "preserveConstEnums": true,
     "sourceMap": true,
     "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "strictPropertyInitialization": false,
+    "experimentalDecorators": true
   },
   "exclude": ["node_modules", "build"],
   "include": ["./src", "webpack.config.ts" ]
